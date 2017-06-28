@@ -1,0 +1,148 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../../bower_components/paper-progress/paper-progress.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/iron-icons/notification-icons.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/app-grid/app-grid.html">
+
+<link rel="import" href="../Radar-app/left-frame/radar-monitor.html">
+<link rel="import" href="../Radar-app/right-frame/radar-control.html">
+
+<dom-module id='radar-app'>
+  <template>
+    <style include="app-grid-style">
+       :host {
+        display: block;
+        --app-grid-columns: 3;
+        --app-grid-item-height: 100%;
+        --app-grid-expandible-item-columns: 2;
+        --app-grid-gutter: 10px;
+      }
+
+      app-header {
+        @apply(--layout-fixed-top);
+        height: 125px;
+        background-color: #9b26af;
+      }
+
+      app-toolbar {
+        height: 100px;
+        background-color: rgba(66, 133, 244, 0.3);
+        padding-left: 2%;
+        color: whitesmoke;
+      }
+
+      paper-progress {
+        display: block;
+        width: 100%;
+        --paper-progress-active-color: rgba(255, 255, 255, 0.5);
+        --paper-progress-container-color: transparent;
+      }
+
+      paper-icon-button {
+        --paper-icon-button-ink-color: white;
+      }
+
+      iron-icon {
+        margin-right: 2%;
+      }
+
+      iron-icon.common {
+        --iron-icon-height: 32px;
+        --iron-icon-width: 32px;
+      }
+
+      ul {
+        margin-top: 0;
+        margin-bottom: 0%;
+        padding: 0;
+        list-style: none;
+      }
+
+      .left-frame {
+        /*background-color: rgba(255, 255, 255, 0.5);*/
+        background-color: rgba(0, 0, 0, 0.9);
+        border-radius: 5px;
+        height: 650px;
+        
+        /*min-width:50%;*/
+        /*background-color: #E0E0E0;*/
+      }
+
+      .right-frame {
+        @apply --app-grid-expandible-item;
+        background-color: rgba(255, 255, 255, 0.7); 
+        height: 650px;     
+        /*background-color: rgba(0, 0, 0, 0.85);*/
+        /*background-color: #1DE9B6;*/
+        /*border-radius: 5px;*/
+      }
+
+      .at1 {
+        height: 25px;
+        background-color: #691a99;
+      }
+
+      .drawer-head {
+        text-align: left;
+        margin-left: 10%;
+      }
+
+      .option {
+        height: 48px;
+        width: 48px;
+      }
+    </style>
+    <app-drawer-layout>
+      <app-header-layout>
+        <app-header slot="header">
+          <app-toolbar class=at1>
+            <!--<paper-progress value="30" indeterminate bottom-item></paper-progress>-->
+          </app-toolbar>
+          <app-toolbar>
+            <iron-icon class='common' icon="track-changes"></iron-icon>
+            <div main-title>
+              <h1>Radar Stream</h1>
+            </div>
+            <!--<paper-progress value="30" indeterminate bottom-item></paper-progress>-->
+          </app-toolbar>
+        </app-header>
+
+        <ul class="app-grid">
+          <li class="left-frame">
+            <radar-monitor></radar-monitor>
+          </li>
+          <li class="right-frame">
+            <radar-control></radar-control>
+          </li>
+        </ul>
+
+
+      </app-header-layout>
+    </app-drawer-layout>
+  </template>
+
+  <script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class radarapp extends Polymer.Element {
+      static get is() {
+        return 'radar-app';
+      }
+      static get properties() {
+        return {
+          prop1: {
+            type: String,
+            value: 'radar-app'
+          }
+        };
+      }
+    }
+
+    window.customElements.define(radarapp.is, radarapp);
+  </script>
+</dom-module>

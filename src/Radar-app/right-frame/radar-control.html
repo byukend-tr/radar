@@ -1,0 +1,144 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../../../bower_components/paper-progress/paper-progress.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../bower_components/iron-icons/notification-icons.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+
+
+<dom-module id="radar-control">
+    <template>
+        <style>
+             :host {
+                display: block;
+            }
+            /*app-header-layout {
+                padding-bottom: 0px;
+                margin-bottom: 0px;
+            }*/
+
+            app-header {
+                position: inherit;
+                width: 100%;
+
+
+                /*@apply(--layout-fixed-top);*/
+            }
+
+            app-toolbar {
+                height: 20%;
+                background-color: rgba(0, 0, 0, 0.8);
+                padding-left: 2%;
+                color: whitesmoke;
+            }
+
+
+            paper-icon-button {
+                --paper-icon-button-ink-color: white;
+            }
+
+            iron-icon {
+                margin-right: 2%;
+            }
+
+            iron-icon.common {
+                --iron-icon-height: 32px;
+                --iron-icon-width: 32px;
+            }
+
+            ul {
+                margin-top: 0;
+                margin-bottom: 0%;
+                padding: 0;
+                list-style: none;
+            }
+
+            app-drawer {
+                --app-drawer-content-container: {
+                    display: absolute;
+                }
+            }
+
+            .drawer-head {
+                text-align: left;
+                margin-left: 10%;
+            }
+
+            #time {
+                padding-left: 1%;
+                font-size: 16px;
+            }
+
+            .main {
+                margin-top: -10.75%;
+                padding: 3%;
+                background-color: rgba(0, 0, 0, 0.8);
+                height: 450px;
+                color: white;
+            }
+        </style>
+
+        <app-drawer-layout force-narrow>
+            <app-drawer slot='drawer' align='right'>asd</app-drawer>
+            <app-header-layout>
+                <app-header slot="header" disabled>
+
+                    <!--<app-toolbar>
+                        <paper-progress value="30" indeterminate bottom-item></paper-progress>
+                    </app-toolbar>-->
+                    <app-toolbar>
+                        <!--<iron-icon class='common' icon="track-changes"></iron-icon>-->
+                        <div main-title>
+                            <h1>Panel [ Last 2 hours ]</h1>
+                        </div>
+                        <div>
+                            <paper-icon-button icon='menu' drawer-toggle></paper-icon-button>
+                        </div>
+                        <!--<paper-progress value="30" indeterminate bottom-item></paper-progress>-->
+                    </app-toolbar>
+                    <app-toolbar>
+                        <div id="time">Current timestamp : [[date]]</div>
+                    </app-toolbar>
+                </app-header>
+            </app-header-layout>
+        </app-drawer-layout>
+
+        <div class='main'>
+            asd
+        </div>
+
+
+
+    </template>
+
+    <script>
+        Polymer({
+            is: 'radar-control',
+            properties: {
+                imgList: JSON,
+                image: {
+                    type: String,
+                },
+                max: Number,
+                ratio: Number,
+                ts: String,
+                play: {
+                    type: String,
+                    value: 'av:pause-circle-outline',
+                },
+                date: {
+                    type: String,
+                }
+
+            },
+
+            ready: function () {
+                this.date = new Date();
+                this.async(function () {
+                    this.ready();
+                }.bind(this), 1000);
+            }
+        });
+    </script>
+</dom-module>
