@@ -25,6 +25,7 @@
         @apply(--layout-fixed-top);
         height: 125px;
         background-color: #9b26af;
+        
       }
 
       app-toolbar {
@@ -65,16 +66,16 @@
         /*background-color: rgba(255, 255, 255, 0.5);*/
         background-color: rgba(0, 0, 0, 0.9);
         border-radius: 5px;
-        height: 650px;
-        
+        height: 680px;
+
         /*min-width:50%;*/
         /*background-color: #E0E0E0;*/
       }
 
       .right-frame {
         @apply --app-grid-expandible-item;
-        background-color: rgba(255, 255, 255, 0.7); 
-        height: 650px;     
+        background-color: rgba(255, 255, 255, 0.7);
+        height: 680px;
         /*background-color: rgba(0, 0, 0, 0.85);*/
         /*background-color: #1DE9B6;*/
         /*border-radius: 5px;*/
@@ -129,6 +130,8 @@
      * @customElement
      * @polymer
      */
+    var mon_p;
+    var ctl_p;
     class radarapp extends Polymer.Element {
       static get is() {
         return 'radar-app';

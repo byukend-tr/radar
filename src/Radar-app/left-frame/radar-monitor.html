@@ -12,6 +12,7 @@
         <style>
              :host {
                 display: block;
+                height: 100%;
             }
             /*app-drawer-layout:not([narrow]) [drawer-toggle] {
                     display: none;
@@ -44,6 +45,7 @@
             .ani {
                 margin: 0;
                 width: 100%;
+                color: rgba(255, 255, 255, 0.8);
                 /*padding-left: 60px;*/
             }
 
@@ -54,7 +56,7 @@
 
             .crop paper-progress {
                 display: block;
-                padding-top: 5%;
+                padding-top: 3%;
                 /*padding-left: 5%;*/
                 margin-left: 5%;
                 width: 90%;
@@ -73,8 +75,9 @@
                 --paper-slider-knob-color: red;
                 --paper-slider-knob-start-color: red;
                 --paper-slider-knob-start-border-color: red;
-                width: 88.75%;
-                padding-left: 9.5%;
+                --paper-slider-secondary-color: var(--paper-grey-400);
+                width: 88.5%;
+                padding-left: 9.8%;
                 margin-top: -4.5%;
             }
 
@@ -103,22 +106,26 @@
                 width: 18%;
                 height: 18%;
             }
+
+            .opt {
+                padding: 3% 0 0 6%;
+            }
         </style>
 
         <div class='main'>
-            <iron-ajax auto url="http://bigmaster.igridproject.info:19080/v0.1/storage/igrid.rainradar.nkm/objects?last=12" handle-as="json"
-                on-response="_loadimgcomplete" last-response="{{imgList}}"></iron-ajax>
+            <iron-ajax id="ajaxReq" url="[[url]]" handle-as="json" on-response="_loadimgcomplete" last-response="{{imgList}}"></iron-ajax>
 
             <div class="ani">
+                <div class='opt'>Range : [[option]]</div>
                 <div class="crop">
                     <paper-progress indeterminate></paper-progress>
-                    <img src="data:image/png;base64,{{image}}">
+                    <img id='map' src="data:image/png;base64,{{image}}">
                 </div>
                 <!--<template is="dom-repeat" items="{{imgList}}">
                         <img src="data:image/png;base64,{{item.data.data}}" width="26%">
                     </template>-->
                 <div class='slide'>
-                    <paper-slider id='slider' value={{ratio}} max=[[max]] min='1' on-immediate-value-changed='_dragging' pin=true></paper-slider>
+                    <paper-slider id='slider' value={{ratio}} max=[[max]] min='[[min]]' on-immediate-value-changed='_dragging' pin=true></paper-slider>
                 </div>
 
                 <div class='panel'>
@@ -143,33 +150,76 @@
             is: 'radar-monitor',
             properties: {
                 imgList: JSON,
-                image: {
-                    type: String,
-                },
+                image: String,
                 max: Number,
-                ratio: Number,
+                min: {
+                    type: Number,
+                    value: 1,
+                    // observer: '_min'
+                },
+                ratio: {
+                    type: Number,
+                    // observer: '_dragging'
+                },
                 ts: String,
                 play: {
                     type: String,
                     value: 'av:pause-circle-outline',
                 },
-                still: Boolean
-
-
+                still: Boolean,
+                last: {
+                    type: Number,
+                    value: 30,
+                    observer: '_pull'
+                },
+                url: String,
+                minutes: {
+                    type: Number,
+                    value: -1,
+                    observer: '_minutesChanged',
+                },
+                init: {
+                    type: Boolean,
+                    value: true,
+                },
+                option: String,
             },
-            _loadimgcomplete: function (e) {
-                this.max = this.imgList.length;
-                console.log(this.imgList.length);
-                // console.log(typeof this.image == 'undefined');
 
-                this.ratio = 1;
-                this.image = this.imgList[0].data.data;
-                this.ts = new Date(this.imgList[0].meta._ts * 1000)
-                this.still = true;
-                this._play();
+            _loadimgcomplete: function (e) {
+                this.option = ctl_p.option;
+                mon_p = this; // use for ref. to radar-control
+                if (typeof this.imgList == 'undefined') return;
+                this.max = this.imgList.length; //max of progress frame
+                // console.log("MAX:" + this.max)
+                // this.min = this.imgList.length - 23;
+                // console.log(this.imgList.length);
+                // console.log(typeof this.image == 'undefined');
+                // if (this.ratio == this.max) this.ratio = this.max - 1; //to make change of last frame(activate _dragging) when update store
+                if (this.init) {
+                    this.ratio = this.max;
+                    console.log("1st")
+                    this.still = true;
+                    this.init = false;
+                    this._play();
+                } else {
+                    this._stop();
+                    this.ratio = this.max;
+                    this.still = true;
+                    this._play();
+                }
+                if (!this.still) {
+
+                    this.still = true;
+                    this._play();
+                }
+                console.log("complete")
+                this._getMinutes();
+
+
             },
             _play: function (e) {
                 if (!this.still) return;
+                console.log(this.last)
                 this.async(function () {
                     if (!this.still) return;
                     // console.log(this.ratio)
@@ -180,9 +230,14 @@
             _dragging: function () {
                 // console.log(typeof this.imgList == 'undefined');
                 if (typeof this.imgList == 'undefined') return;
-                console.log(this.$.slider.immediateValue)
+                // console.log(this.$.slider.immediateValue)
+                // console.log(this.still)
+                // console.log(this._play)
+
                 var index = this.$.slider.immediateValue - 1;
+
                 this.image = this.imgList[index].data.data;
+
                 this.ts = new Date(this.imgList[index].meta._ts * 1000)
                 // console.log(this.image);
 
@@ -199,7 +254,7 @@
             },
             _stop: function () {
                 this.still = false;
-                this.ratio = 1;
+                this.ratio = this.min;
                 this.play = 'av:play-circle-outline';
             },
             _reload: function () {
@@ -207,8 +262,6 @@
                 this.async(function () {
                     this._playAndPause();
                 }.bind(this), 100);
-
-
             },
             _previous() {
                 this.ratio--;
@@ -216,6 +269,29 @@
             _next() {
                 this.ratio++;
             },
+            _min() {
+                alert(this.min)
+            },
+            _getMinutes() {
+                this.async(function () {
+                    this.minutes = (new Date()).getMinutes();
+                    console.log(this.minutes)
+                    this._getMinutes();
+                }, 1000);
+            },
+            _minutesChanged() {
+                // if (this.minutes % 5 == 0) 
+                this._pull();
+            },
+            _pull() {
+                console.log("requesting...")
+                console.log("GET")
+                this.url =
+                    "http://bigmaster.igridproject.info:19080/v0.1/storage/igrid.rainradar.nkm/objects?last=" +
+                    this.last;
+                console.log(this.url)
+                this.$.ajaxReq.generateRequest();
+            }
 
         });
     </script>
