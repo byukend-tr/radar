@@ -12,7 +12,6 @@
         <style>
              :host {
                 display: block;
-                height: 100%;
             }
             /*app-drawer-layout:not([narrow]) [drawer-toggle] {
                     display: none;
@@ -76,9 +75,9 @@
                 --paper-slider-knob-start-color: red;
                 --paper-slider-knob-start-border-color: red;
                 --paper-slider-secondary-color: var(--paper-grey-400);
-                width: 88.5%;
-                padding-left: 9.8%;
-                margin-top: -4.5%;
+                width: 88.75%;
+                padding-left: 9.5%;
+                margin-top: -5%;
             }
 
             .panel {
@@ -137,7 +136,7 @@
                 </div>
 
                 <div class='time'>
-                    <b>Capture time:</b><br> [[ts]]
+                    <b>This captured time:</b><br> [[ts]]
                 </div>
 
             </div>
@@ -175,7 +174,6 @@
                 url: String,
                 minutes: {
                     type: Number,
-                    value: -1,
                     observer: '_minutesChanged',
                 },
                 init: {
@@ -197,29 +195,27 @@
                 // if (this.ratio == this.max) this.ratio = this.max - 1; //to make change of last frame(activate _dragging) when update store
                 if (this.init) {
                     this.ratio = this.max;
-                    console.log("1st")
+                    // console.log("1st")
                     this.still = true;
                     this.init = false;
                     this._play();
-                } else {
-                    this._stop();
+                } else if (!this.still) {
+                    // console.log("ano")
+                    this._reload();
                     this.ratio = this.max;
-                    this.still = true;
-                    this._play();
-                }
-                if (!this.still) {
-
-                    this.still = true;
-                    this._play();
                 }
                 console.log("complete")
+                // console.log(this.still)
+                // uriContent = "data:application/octet-stream;base64," + encodeURIComponent(this.imgList[0].data.data);
+                // window.open(uriContent);
+
                 this._getMinutes();
 
 
             },
             _play: function (e) {
                 if (!this.still) return;
-                console.log(this.last)
+                // console.log(this.last)
                 this.async(function () {
                     if (!this.still) return;
                     // console.log(this.ratio)
@@ -233,9 +229,9 @@
                 // console.log(this.$.slider.immediateValue)
                 // console.log(this.still)
                 // console.log(this._play)
-
+                 
                 var index = this.$.slider.immediateValue - 1;
-
+                if (typeof ctl_p != 'undefined') ctl_p.ratio = index+1;
                 this.image = this.imgList[index].data.data;
 
                 this.ts = new Date(this.imgList[index].meta._ts * 1000)
@@ -275,7 +271,7 @@
             _getMinutes() {
                 this.async(function () {
                     this.minutes = (new Date()).getMinutes();
-                    console.log(this.minutes)
+                    // console.log(this.minutes)
                     this._getMinutes();
                 }, 1000);
             },

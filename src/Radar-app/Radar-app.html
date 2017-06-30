@@ -16,21 +16,19 @@
        :host {
         display: block;
         --app-grid-columns: 3;
-        --app-grid-item-height: 100%;
         --app-grid-expandible-item-columns: 2;
         --app-grid-gutter: 10px;
       }
 
       app-header {
         @apply(--layout-fixed-top);
-        height: 125px;
-        background-color: #9b26af;
-        
+        height: 112px;
+        background-color: black;
       }
 
       app-toolbar {
         height: 100px;
-        background-color: rgba(66, 133, 244, 0.3);
+        background-color: rgba(0, 0, 0, 0.7);
         padding-left: 2%;
         color: whitesmoke;
       }
@@ -66,7 +64,7 @@
         /*background-color: rgba(255, 255, 255, 0.5);*/
         background-color: rgba(0, 0, 0, 0.9);
         border-radius: 5px;
-        height: 680px;
+        height: 620px;
 
         /*min-width:50%;*/
         /*background-color: #E0E0E0;*/
@@ -75,15 +73,20 @@
       .right-frame {
         @apply --app-grid-expandible-item;
         background-color: rgba(255, 255, 255, 0.7);
-        height: 680px;
+        height: 620px;
         /*background-color: rgba(0, 0, 0, 0.85);*/
         /*background-color: #1DE9B6;*/
         /*border-radius: 5px;*/
       }
 
       .at1 {
-        height: 25px;
+        height: 6px;
         background-color: #691a99;
+      }
+
+      .at2 {
+        height: 1px;
+        background-color: grey;
       }
 
       .drawer-head {
@@ -109,6 +112,11 @@
             </div>
             <!--<paper-progress value="30" indeterminate bottom-item></paper-progress>-->
           </app-toolbar>
+          <app-toolbar class=at2>
+          </app-toolbar>
+          <app-toolbar class=at1>
+          </app-toolbar>
+
         </app-header>
 
         <ul class="app-grid">

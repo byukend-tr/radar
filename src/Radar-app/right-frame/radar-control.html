@@ -6,7 +6,9 @@
 <link rel="import" href="../../../bower_components/iron-icons/notification-icons.html">
 <link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../../bower_components/paper-listbox/paper-listbox.html">
+
 
 
 
@@ -46,6 +48,8 @@
 
             iron-icon {
                 margin-right: 2%;
+                padding-right: 5%;
+                
             }
 
             iron-icon.common {
@@ -65,7 +69,7 @@
                     position: fixed;
                     color: black;
                     top: 135px;
-                    bottom: 480px;
+                    bottom: 400px;
                     /*margin-right:0.59%;*/
                     margin-right: 10.2px;
 
@@ -85,7 +89,7 @@
             }
 
             .main {
-                margin-top: -12.75%;
+                margin-top: -15.75%;
                 padding: 3%;
                 /*background-color: rgba(0, 0, 0, 0.8);*/
                 /*height: 450px;*/
@@ -104,10 +108,12 @@
                 padding-left: 30px;
                 cursor: pointer;
             }
+
             hr {
-                background-color: black
+                background-color: white
             }
-            paper-listbox{
+
+            paper-listbox {
                 padding: 0;
             }
 
@@ -115,7 +121,21 @@
                 color: rgba(255, 255, 255, 0.5)
             }
 
-            
+            p {
+                font-size: 12px;
+                padding-left: 10px;
+            }
+
+            h3 {
+                display: inline-block;
+            }
+
+            .download {
+                padding-top: 150px;
+            }
+            .download paper-button{
+                background: #43A047
+            }
         </style>
 
         <app-drawer-layout id='layout' force-narrow>
@@ -128,7 +148,7 @@
                     <paper-item class='showtime' value='The past hour' drawer-toggle>The past hour</paper-item>
                     <paper-item class='showtime' value='The past 2 hours' drawer-toggle>The past 2 hours</paper-item>
                     <paper-item class='showtime' value='The past 12 hours' drawer-toggle>The past 12 hours</paper-item>
-                    </paper-list-box>
+                </paper-listbox>
 
 
             </app-drawer>
@@ -161,7 +181,50 @@
         </app-drawer-layout>
 
         <div class='main'>
-            Information :
+            <h2>Information :</h2>
+
+            <table style="padding-left:20px">
+                <tr height="40">
+                    <th>
+                        Time range
+                    </th>
+                </tr>
+                <tr>
+                    <td style="padding-left:10px">From </td>
+                    <td>:</td>
+                    <td style="padding-left:5px"> [[t1]] </td>
+                </tr>
+                <tr>
+                    <td style="padding-left:10px">To </td>
+                    <td>:</td>
+                    <td style="padding-left:5px"> [[t2]] </td>
+                </tr>
+                <tr height="40">
+                    <th>
+                        Total Frame
+                    </th>
+                    <td>:</td>
+
+                    <td style="padding-left:5px">
+                        [[max]]
+                    </td>
+                </tr>
+
+                <tr height="40">
+                    <th>
+                        Current Frame
+                    </th>
+                    <td>:</td>
+                    <td style="padding-left:5px">
+                        #[[ratio]]
+                    </td>
+                </tr>
+            </table>
+
+            <div class="download">
+                <paper-button on-tap="" raised><iron-icon icon='icons:archive'></iron-icon>save all frame</paper-button>
+                <paper-button on-tap="" raised><iron-icon icon='icons:archive'></iron-icon>save current frame</paper-button>
+            </div>
         </div>
 
 
@@ -189,12 +252,22 @@
                 option: {
                     value: 'The past 2 hours',
                     observer: '_timechanged'
-                }
+                },
+                t1: String,
+                t2: String,
+
 
             },
 
             ready: function () {
                 ctl_p = this;
+                if (typeof mon_p != 'undefined') {
+                    console.log("INFO")
+                    this.max = mon_p.max;
+                    this.t1 = new Date(mon_p.imgList[0].meta._ts * 1000);
+                    this.t2 = new Date(mon_p.imgList[this.max - 1].meta._ts * 1000);
+                }
+
                 // console.log("ready")
                 this.date = new Date();
                 this.async(function () {
@@ -208,9 +281,9 @@
                 // if (this.option == 'The past hour') mon_p.min = 144 - 11;
                 // else if (this.option == 'The past 2 hours') mon_p.min = 144 - 23;
                 // else if (this.option == 'The past 12 hours') mon_p.min = 1;
-                if (this.option == 'The past hour') mon_p.last = 12;
-                else if (this.option == 'The past 2 hours') mon_p.last = 24;
-                else if (this.option == 'The past 12 hours') mon_p.last = 144;
+                if (this.option == 'The past hour') mon_p.last = 13;
+                else if (this.option == 'The past 2 hours') mon_p.last = 25;
+                else if (this.option == 'The past 12 hours') mon_p.last = 145;
             },
         });
     </script>
