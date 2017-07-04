@@ -1,0 +1,20 @@
+{
+  "name": "nebula-icons",
+  "version": "2.0.1",
+  "description": "Share SVG icons resources between custom elements.",
+  "private": true,
+  "license": "ISC",
+  "author": "Chris Beckett <chrisb@arsnebula.com>",
+  "homepage": "https://github.com/arsnebula/nebula-icons",
+  "repository": "arsnebula/nebula-icons",
+  "scripts": {
+    "test": "wct --plugin=local",
+    "test:debug": "wct --plugin=local --persistent=true",
+    "test:sauce": "wct --plugin=sauce",
+    "start": "browser-sync start -c bsconfig.js"
+  },
+  "devDependencies": {
+    "browser-sync": "latest",
+    "web-component-tester": "^6.0.0"
+  }
+}

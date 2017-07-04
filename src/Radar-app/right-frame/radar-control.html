@@ -8,10 +8,7 @@
 <link rel="import" href="../../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../../bower_components/paper-listbox/paper-listbox.html">
-
-
-
-
+<link rel="import" href="../../../bower_components/paper-spinner/paper-spinner.html">
 
 <dom-module id="radar-control">
     <template>
@@ -49,7 +46,6 @@
             iron-icon {
                 margin-right: 2%;
                 padding-right: 5%;
-                
             }
 
             iron-icon.common {
@@ -69,7 +65,7 @@
                     position: fixed;
                     color: black;
                     top: 135px;
-                    bottom: 400px;
+                    bottom: 355px;
                     /*margin-right:0.59%;*/
                     margin-right: 10.2px;
 
@@ -131,10 +127,12 @@
             }
 
             .download {
-                padding-top: 150px;
+                padding-top: 145px;
             }
-            .download paper-button{
-                background: #43A047
+
+            .download paper-button {
+                background: #43A047;
+                width: 25%;
             }
         </style>
 
@@ -148,6 +146,8 @@
                     <paper-item class='showtime' value='The past hour' drawer-toggle>The past hour</paper-item>
                     <paper-item class='showtime' value='The past 2 hours' drawer-toggle>The past 2 hours</paper-item>
                     <paper-item class='showtime' value='The past 12 hours' drawer-toggle>The past 12 hours</paper-item>
+                    <paper-item class='showtime' value='Custom' drawer-toggle>Custom</paper-item>
+
                 </paper-listbox>
 
 
@@ -220,13 +220,14 @@
                     </td>
                 </tr>
             </table>
-
+            <!--<paper-spinner id="spin" alt="Processing..." active></paper-spinner>-->
             <div class="download">
-                <paper-button on-tap="" raised><iron-icon icon='icons:archive'></iron-icon>save all frame</paper-button>
-                <paper-button on-tap="" raised><iron-icon icon='icons:archive'></iron-icon>save current frame</paper-button>
+                <paper-button on-tap="_downloadAll" raised>
+                    <iron-icon icon='icons:archive'></iron-icon>download all</paper-button>
+                <paper-button on-tap="_download" raised>
+                    <iron-icon icon='icons:archive'></iron-icon>download current</paper-button>
             </div>
         </div>
-
 
 
     </template>
@@ -255,14 +256,19 @@
                 },
                 t1: String,
                 t2: String,
-
+                ajax_load: {
+                    type: Boolean,
+                    observer: 'ajax_load',
+                }
 
             },
 
             ready: function () {
                 ctl_p = this;
+                this._secondChange();
+            },
+            _secondChange() {
                 if (typeof mon_p != 'undefined') {
-                    console.log("INFO")
                     this.max = mon_p.max;
                     this.t1 = new Date(mon_p.imgList[0].meta._ts * 1000);
                     this.t2 = new Date(mon_p.imgList[this.max - 1].meta._ts * 1000);
@@ -271,12 +277,15 @@
                 // console.log("ready")
                 this.date = new Date();
                 this.async(function () {
-                    this.ready();
+                    this._secondChange();
                 }.bind(this), 1000);
+
             },
             _timechanged: function () {
-                // console.log(mon_p)                
+                // console.log(mon_p)     
                 if (typeof mon_p == 'undefined') return;
+                // this.ajax_load  = mon_p.$.ajaxReq.    
+
                 // console.log(this.$.layout.forceNarrow)
                 // if (this.option == 'The past hour') mon_p.min = 144 - 11;
                 // else if (this.option == 'The past 2 hours') mon_p.min = 144 - 23;
@@ -285,6 +294,23 @@
                 else if (this.option == 'The past 2 hours') mon_p.last = 25;
                 else if (this.option == 'The past 12 hours') mon_p.last = 145;
             },
+            _test() {
+                console.log(this.$.spin)
+                console.log(this.$.spin.active)
+                this.$.spin.active = !this.$.spin.active;
+                // console.log(this.$.spin.active)
+            },
+            ajax_load() {
+
+            },
+            _downloadAll(){
+                mon_p.create_zip();
+            },
+            _download(){
+                mon_p._downloadImg();
+            }
+
+
         });
     </script>
 </dom-module>

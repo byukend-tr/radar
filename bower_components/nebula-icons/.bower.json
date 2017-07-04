@@ -1,0 +1,48 @@
+{
+  "name": "nebula-icons",
+  "description": "Share SVG icons resources between custom elements.",
+  "license": "ISC",
+  "private": true,
+  "authors": [
+    "Chris Beckett <chrisb@arsnebula.com>"
+  ],
+  "homepage": "https://github.com/arsnebula/nebula-icons#README",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test"
+  ],
+  "keywords": [
+    "polymer",
+    "webcomponents",
+    "web-components",
+    "customelements",
+    "custom-elements",
+    "icons",
+    "images",
+    "svg"
+  ],
+  "main": "nebula-icons.html",
+  "demos": {
+    "Demo": "demo/index.html"
+  },
+  "dependencies": {
+    "polymer": "Polymer/polymer#^2.0.0",
+    "nebula-element-mixin": "arsnebula/nebula-element-mixin#^2.0.0"
+  },
+  "devDependencies": {
+    "web-component-tester": "polymer/web-component-tester#^6.0.0",
+    "nebula-test": "arsnebula/nebula-test#^2.0.0"
+  },
+  "version": "2.0.1",
+  "_release": "2.0.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "v2.0.1",
+    "commit": "d904ee92a5121a597cb84b4a09f2838de08a6a88"
+  },
+  "_source": "https://github.com/arsnebula/nebula-icons.git",
+  "_target": "^2.0.1",
+  "_originalSource": "arsnebula/nebula-icons"
+}

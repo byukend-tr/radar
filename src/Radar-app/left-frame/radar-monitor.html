@@ -5,6 +5,13 @@
 <link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../../bower_components/iron-icons/av-icons.html">
 <link rel="import" href="../../../bower_components/paper-progress/paper-progress.html">
+<link rel="import" href="../../../bower_components/nebula-loader/nebula-loader.html">
+<link rel="import" href="../../../bower_components/nebula-icons/nebula-icons.html">
+<link rel="import" href="../../../bower_components/paper-spinner/paper-spinner.html">
+<script type="text/javascript" src="../../../bower_components/jszip/dist/jszip.js"></script>
+<script type="text/javascript" src="../../../bower_components/jszip/vendor/FileSaver.js"></script>
+
+
 
 
 <dom-module id='radar-monitor'>
@@ -14,8 +21,7 @@
                 display: block;
             }
             /*app-drawer-layout:not([narrow]) [drawer-toggle] {
-                    display: none;
-                
+                    display: none;                
                 }*/
 
             app-toolbar {
@@ -28,6 +34,14 @@
                     background-color: whitesmoke;
                     /*--app-drawer-scrim-background: rgba(0, 0, 100, 0.8);*/
                 }
+            }
+
+            nebula-loader {
+                display: inherit;
+            }
+
+            nebula-loader #spinner {
+                color: darkred;
             }
 
             .drawer li {
@@ -75,7 +89,7 @@
                 --paper-slider-knob-start-color: red;
                 --paper-slider-knob-start-border-color: red;
                 --paper-slider-secondary-color: var(--paper-grey-400);
-                width: 88.75%;
+                width: 89.25%;
                 padding-left: 9.5%;
                 margin-top: -5%;
             }
@@ -112,10 +126,12 @@
         </style>
 
         <div class='main'>
+
+
             <iron-ajax id="ajaxReq" url="[[url]]" handle-as="json" on-response="_loadimgcomplete" last-response="{{imgList}}"></iron-ajax>
 
             <div class="ani">
-                <div class='opt'>Range : [[option]]</div>
+                <div class='opt'>Stream : [[option]]</div>
                 <div class="crop">
                     <paper-progress indeterminate></paper-progress>
                     <img id='map' src="data:image/png;base64,{{image}}">
@@ -140,9 +156,10 @@
                 </div>
 
             </div>
-        </div>
 
+        </div>
     </template>
+
 
     <script>
         Polymer({
@@ -168,19 +185,26 @@
                 still: Boolean,
                 last: {
                     type: Number,
-                    value: 30,
+                    value: 25,
                     observer: '_pull'
                 },
                 url: String,
-                minutes: {
-                    type: Number,
-                    observer: '_minutesChanged',
-                },
                 init: {
                     type: Boolean,
                     value: true,
                 },
+                minutes: {
+                    type: Number,
+                    observer: '_minutesChanged',
+                },
                 option: String,
+                ajax_load: {
+                    type: Boolean,
+                    observer: '_pageloading'
+                }
+            },
+            ready() {
+
             },
 
             _loadimgcomplete: function (e) {
@@ -205,9 +229,7 @@
                     this.ratio = this.max;
                 }
                 console.log("complete")
-                // console.log(this.still)
-                // uriContent = "data:application/octet-stream;base64," + encodeURIComponent(this.imgList[0].data.data);
-                // window.open(uriContent);
+
 
                 this._getMinutes();
 
@@ -215,6 +237,7 @@
             },
             _play: function (e) {
                 if (!this.still) return;
+                // if (this.ratio == this.max) this.ratio = 0; //always replay
                 // console.log(this.last)
                 this.async(function () {
                     if (!this.still) return;
@@ -229,14 +252,14 @@
                 // console.log(this.$.slider.immediateValue)
                 // console.log(this.still)
                 // console.log(this._play)
-                 
+
                 var index = this.$.slider.immediateValue - 1;
-                if (typeof ctl_p != 'undefined') ctl_p.ratio = index+1;
+                if (typeof ctl_p != 'undefined') ctl_p.ratio = index + 1;
                 this.image = this.imgList[index].data.data;
 
                 this.ts = new Date(this.imgList[index].meta._ts * 1000)
                 // console.log(this.image);
-
+                // if (this.ratio == this.max) this.ratio = 0;
             },
             _playAndPause: function () {
                 if (this.still) {
@@ -270,12 +293,14 @@
             },
             _getMinutes() {
                 this.async(function () {
+                    this.ajax_load = this.$.ajaxReq.loading;
                     this.minutes = (new Date()).getMinutes();
                     // console.log(this.minutes)
                     this._getMinutes();
                 }, 1000);
             },
             _minutesChanged() {
+                if (this.init) return;
                 // if (this.minutes % 5 == 0) 
                 this._pull();
             },
@@ -286,7 +311,40 @@
                     "http://bigmaster.igridproject.info:19080/v0.1/storage/igrid.rainradar.nkm/objects?last=" +
                     this.last;
                 console.log(this.url)
+                // console.log(this.$)
                 this.$.ajaxReq.generateRequest();
+            },
+            _pageloading() {
+                if (this.ajax_load) {
+                    // alert('loading')
+                } else {
+                    // alert('complete')
+                    this.ratio = this.max;
+                }
+            },
+            create_zip() {
+                var zip = new JSZip();
+                // zip.file("Hello.txt", "Hello World\n");
+                var img = zip.folder("images");
+                for (i = 0; i < this.max; i++) {
+                    img.file(i + ".jpg", this.imgList[i].data.data, {
+                        base64: true
+                    });
+                }
+                zip.generateAsync({
+                        type: "blob"
+                    })
+                    .then(function (content) {
+                        // see FileSaver.js
+                        saveAs(content, "radar-stream.zip");
+                    });
+            },
+            _downloadImg() {
+                /* download image */
+                // console.log(this.still)
+                uriContent = "data:application/octet-stream;base64," + encodeURIComponent(this.imgList[this.ratio -
+                    1].data.data);
+                window.open(uriContent, "radar-stream.jpg");
             }
 
         });

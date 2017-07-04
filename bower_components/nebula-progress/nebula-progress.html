@@ -1,0 +1,143 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../nebula-element-mixin/nebula-element-mixin.html">
+
+<!--
+`<nebula-progress>` is a custom element to display a progress bar control. The element displays a horizontal progress bar that displays the percentage complete of a task (between 0 and 100).
+
+## Import
+
+```html
+<link rel="import" href="/bower_components/nebula-progress/nebula-progress.html"> 
+```
+
+## Usage
+
+Add the element. Set the `value` property as a percentage to update the amount of progress.
+
+```html
+<nebula-progress value="20"></nebula-progress>
+```
+
+## Styling
+
+Style the element using normal CSS properties. The `color` property controls the color of the progress bar.
+
+The element inherits default values from the following global styles. If a global variable has not been set, it will use the default.
+
+Custom property | Description | Default
+:--- | :--- | :---
+`--nebula-ui-margin` | The margin of the element. | 4px
+`--nebula-ui-border-width` | The border width of the element. | 1px
+`--nebula-ui-border-radius` | The border-radius of the element. | 2px
+`--nebula-ui-disabled-opacity` | Opacity of the element when disabled. | 0.6
+
+-->
+<dom-module id="nebula-progress">
+  <template>
+    <style>
+      :host {
+        display: inline-block;
+        position: relative;
+        width: 4rem;
+        height: 1rem;
+        margin: var(--nebula-ui-margin, 4px);
+        padding: 0;
+        outline: none;
+        color: inherit;
+        border: var(--nebula-ui-border-width, 1px) solid currentColor;
+        border-radius: var(--nebula-ui-border-radius, 2px);
+        background-color: transparent;
+      }
+      :host([block]) {
+        display: block;
+        width: auto;
+      }
+      #progress {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        outline: 0;
+        height: 100%;
+        width: 0%;
+        background-color: currentColor;
+      }
+      :host([hidden]) {
+        display: none;
+      }
+      :host([disabled]) {
+        opacity: var(--nebula-ui-disabled-opacity, 0.6);
+      }
+    </style>
+    <div id="progress"></div>
+  </template>
+  <script>
+  (function() {
+    'use strict'
+
+    // symbols for private and protected members
+    const onValueChanged = Symbol()
+    const observe = Symbol.for('Nebula.ElementMixin.observe')
+
+    class NebulaProgress extends Nebula.ElementMixin(Polymer.Element) {
+
+      /**
+       * Gets the custom element name.
+       * @protected
+       * @ignore
+       */
+      static get is() { return 'nebula-progress' }
+
+      /**
+       * Gets the property definitions for data binding.
+       * @protected
+       * @ignore
+       */
+      static get properties() {
+        return {
+          /**
+           * A value (between 0 and 100) representing the percentage complete.
+           */
+          value: {
+            type: Number,
+            value: 0
+          }
+        }
+      }
+
+      /**
+       * Creates a new instance of the custom element.
+       */
+      constructor() {
+        super()
+        this[observe]('value', this[onValueChanged])
+      }
+
+      /**
+       * The Polymer lifecycle callback triggered when the element has been initialized.
+       * @protected
+       */
+      ready() {
+        super.ready();
+        this.setAttribute('role', 'progressbar')
+        this.setAttribute('aria-valuemin', '0')
+        this.setAttribute('aria-valuemax', '100')
+      }
+
+      /**
+       * Property observer triggered when the value of the `value` property is changed.
+       * @param {number} value - The updated value of the property.
+       * @private
+       */
+      [onValueChanged](value) {
+        if (typeof value === 'number') {
+          this.$.progress.style.width = value + "%"
+          this.setAttribute('aria-valuenow', value)
+        }        
+      }
+
+    }
+
+    customElements.define(NebulaProgress.is, NebulaProgress)
+  }())
+  </script>
+</dom-module>

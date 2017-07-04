@@ -1,0 +1,252 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../polymer/lib/elements/dom-if.html">
+<link rel="import" href="../nebula-element-mixin/nebula-element-mixin.html">
+<link rel="import" href="../nebula-icons/nebula-icon.html">
+<link rel="import" href="../nebula-dialog/nebula-dialog.html">
+<link rel="import" href="../nebula-progress/nebula-progress.html">
+
+<!--
+`<nebula-loader>` displays a customizable loading/progress overlay. When opened, a modal overlay is displayed with a backdrop that covers the entire viewport, and a centered content dialog. The element provides a set of optional properties that can be used to combine a title, a spinning icon, a progress bar, and/or a progress text message. By styling the element with CSS, you can create any number of loading overlays from a simple spinning icon, to a dynamic progress indicator.
+ 
+## Usage
+
+The following demonstrates the element with some common properties and events.
+
+```html
+<nebula-loader
+  title="Loader"
+  icon="icons:refresh"
+  progress=40
+  text="40%">
+</nebula-loader>
+```
+
+You can also create and show the element programatically. The `show` method will ensure the element is appended and removed from the `document.body` automatically. The method returns a promise that is resolved once the element closing animation is complete.
+
+```js
+// create the element
+const loader = document.createElement('nebula-loader')
+
+// apply any custom styles
+loader.classList.add('loader-theme')
+
+// show the element - automatically appended to document.body
+loader.show({
+  title: 'Loading',
+  icon: 'icons:refresh',
+  progress: 40,
+  text: '40%'
+}).then(function() {
+  console.log('Loader has been closed')
+})
+
+// update the progress as applicable (if showing progress bar)
+loader.progress = 50
+loader.text = '50%'
+
+// close when finished background work
+loader.close()
+```
+
+## Styling
+
+The element can be styled with standard CSS properties, and the following CSS custom properties:
+
+Custom property | Description | Default
+:--- | :--- | :---
+`--nebula-loader-backdrop-color` | The backdrop color of the host element. | hsla(0, 0%, 0%, 0.6)
+`--nebula-loader-background-color` | The background color of the dialog container. | transparent
+`--nebula-loader-border-color` | The border color of the dialog container. | transparent
+`--nebula-loader-color` | The default text color of the dialog contents. | white
+`--nebula-loader-title-color` | The color of the title. | currentColor
+`--nebula-loader-title-font` | The font of the title. | inherit
+`--nebula-loader-icon-color` | The color of the icon. | currentColor
+`--nebula-loader-icon-size` | The size of the icon. | 32px
+`--nebula-loader-progress-color` | The color of the progress bar. | currentColor
+`--nebula-loader-text-color` | The color of the progress text. | currentColor
+`--nebula-loader-text-font` | The font of the progress text. | inherit
+
+-->
+<dom-module id="nebula-loader">
+  <template>
+    <style include="nebula-dialog-styles">
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+       100% { transform: rotate(360deg); }
+      }
+      :host {
+        background-color: var(--nebula-ui-backdrop-color, var(--nebula-loader-backdrop-color, hsla(0, 0%, 0%, 0.6)));
+      }
+      #content {
+        width: 80%;
+        max-width: 320px;
+        height: auto;
+        min-height: fit-content;
+        cursor: default;
+        align-items: stretch;
+        margin: 64px 0;
+        padding: 16px;
+        text-align: center;
+        background-color: var(--nebula-loader-background-color, transparent);
+        border: 1px solid var(--nebula-loader-border-color, transparent);
+        color: var(--nebula-loader-color, white);
+      }
+      #title {
+        color: var(--nebula-loader-title-color, currentColor);
+        font: var(--nebula-loader-title-font, 1.2rem bold);
+        margin-bottom: 4px;
+      }
+      #icon {
+        color: var(--nebula-loader-icon-color, currentColor);
+        height: var(--nebula-loader-icon-size, 32px);
+        width: var(--nebula-loader-icon-size, 32px);
+        margin: 4px 0;
+      }
+      #progress {
+        color: var(--nebula-loader-progress-color, currentColor);
+        box-sizing: border-box;
+        width: 100%;
+        margin: 4px 0;
+      }
+      #text {
+        margin-top: 4px;
+        color: var(--nebula-loader-text-color, currentColor);
+        font: var(--nebula-loader-text-font, inherit);
+      }
+      :host([opened]) #icon {
+        animation: spin 1s ease-out infinite !important;
+      }
+    </style>
+    <div id="content">
+      <dom-if if="[[title]]">
+        <template>
+          <div id="title">[[title]]</div>
+        </template>
+      </dom-if>
+      <dom-if if="[[icon]]">
+        <template>
+          <div id="spinner">
+            <nebula-icon id="icon" icon="[[icon]]"></nebula-icon>
+          </div>
+        </template>
+      </dom-if>
+      <dom-if if="[[$isNumber(progress)]]">
+        <template>
+          <nebula-progress id="progress" value="[[progress]]"></nebula-progress> 
+        </template>
+      </dom-if>
+      <dom-if if="[[text]]">
+        <template>
+          <div id="text">[[text]]</div>
+        </template>
+      </dom-if>
+    </div>
+  </template>
+  <script>
+  (function() {
+    'use strict'
+
+    // symbols for private members
+    const onProgressChanged = Symbol()
+
+    // symbols for protected members
+    const observe = Symbol.for('Nebula.ElementMixin.observe')
+
+    /**
+     * Display a loading progress overlay.
+     */
+    class NebulaLoader extends Nebula.DialogBehavior(Nebula.ElementMixin(Polymer.Element)) {
+
+      /**
+       * Gets the custom element name.
+       */
+      static get is() { return 'nebula-loader' }
+
+      /**
+       * Gets the property definitions for data binding.
+       */
+      static get properties() {
+        return {
+          /**
+            * Indicates if the dialog can be canceled.
+            * Set to `true` to allow the user to cancel the dialog by clicking the backdrop area, or pressing the `ESC` key.
+           */
+          allowCancel: {
+            type: Boolean,
+            value: false
+          },
+          /**
+           * The title to display.
+           * If the title property is not set, a title will not be displayed.
+           */
+          title: {
+            type: String
+          },
+          /**
+           * A resource key of a nebula-icon to display.
+           * The icon will be displayed using a spinning animation.
+           * If the icon property is not set, a spinner icon will not be displayed.
+           **/
+          icon: {
+            type: String
+          },
+          /**
+           * The progress percentage value (between 0 and 100).
+           * If the progress property is not set, a progress bar will not be displayed.
+           **/
+          progress: {
+            type: Number
+          },
+          /**
+           * A progress message.
+           * If the text property is not set, a progress message will not be displayed.
+           **/
+          text: {
+            type: String
+          }          
+        }
+      }
+
+      /**
+       * Creates a new instance of the element.
+       * @protected
+       */
+      constructor() {
+        super()
+        this[observe]('progress', this[onProgressChanged])
+      }
+
+      /**
+       * The lifecycle callback invoked when the element has been initialized.
+       * @protected
+       */
+      ready() {
+        super.ready()
+        this.setAttribute('role', 'progressbar')
+      }
+
+      /**
+       * A computed binding indicating whether a value is a valid integer.
+       * @private
+       */
+      $isNumber(val) {
+        return Number.isInteger(val)
+      }
+
+      /**
+       * A property observer triggered when the value of progress is changed.
+       * @private
+       */
+      [onProgressChanged](progress) {
+        if (progress) {
+          this.setAttribute('aria-value-min', '0')
+          this.setAttribute('aria-value-max', '100')
+          this.setAttribute('aria-value-now', progress.toString())
+        }
+      }
+
+    }
+    customElements.define(NebulaLoader.is, NebulaLoader)
+  }())
+  </script>
+</dom-module>

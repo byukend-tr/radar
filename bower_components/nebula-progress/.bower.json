@@ -1,0 +1,47 @@
+{
+  "name": "nebula-progress",
+  "description": "A progress bar control.",
+  "license": "ISC",
+  "private": true,
+  "authors": [
+    "Chris Beckett <chrisb@arsnebula.com>"
+  ],
+  "homepage": "https://github.com/arsnebula/nebula-progress#README",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test"
+  ],
+  "keywords": [
+    "polymer",
+    "webcomponents",
+    "web-components",
+    "customelements",
+    "custom-elements",
+    "progress",
+    "control"
+  ],
+  "main": "nebula-progress.html",
+  "demos": {
+    "Demo": "demo/index.html"
+  },
+  "dependencies": {
+    "polymer": "Polymer/polymer#^2.0.0",
+    "nebula-element-mixin": "arsnebula/nebula-element-mixin#^2.0.0"
+  },
+  "devDependencies": {
+    "web-component-tester": "polymer/web-component-tester#^6.0.0",
+    "nebula-test": "arsnebula/nebula-test#^2.0.0"
+  },
+  "version": "2.0.1",
+  "_release": "2.0.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "v2.0.1",
+    "commit": "7ae0cc760cd9b20e6aee0493b3a890f8e0f13005"
+  },
+  "_source": "https://github.com/arsnebula/nebula-progress.git",
+  "_target": "^2.0.1",
+  "_originalSource": "arsnebula/nebula-progress"
+}
