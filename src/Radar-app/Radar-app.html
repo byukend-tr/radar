@@ -21,24 +21,22 @@
       }
 
       app-header {
-        @apply(--layout-fixed-top);
-        height: 112px;
-        background-color: rgba(0, 0, 0, 0.7);
+        height: 8em;
       }
 
+
       app-toolbar {
-        height: 100px;
-        background-color: rgba(0, 0, 0, 0.5);
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.85);
         padding-left: 2%;
         color: whitesmoke;
       }
-
-      paper-progress {
+      /*paper-progress {
         display: block;
         width: 100%;
         --paper-progress-active-color: rgba(255, 255, 255, 0.5);
         --paper-progress-container-color: transparent;
-      }
+      }*/
 
       paper-icon-button {
         --paper-icon-button-ink-color: white;
@@ -54,17 +52,18 @@
       }
 
       ul {
-        margin-top: 0;
-        margin-bottom: 0%;
+        display: relative;
+        height: 100%;
+        margin: 0;
         padding: 0;
-        list-style: none;
+        /*list-style: none;*/
       }
+
 
       .left-frame {
         /*background-color: rgba(255, 255, 255, 0.5);*/
         background-color: rgba(0, 0, 0, 0.9);
         border-radius: 5px;
-        height: 620px;
 
         /*min-width:50%;*/
         /*background-color: #E0E0E0;*/
@@ -73,7 +72,7 @@
       .right-frame {
         @apply --app-grid-expandible-item;
         background-color: rgba(255, 255, 255, 0.7);
-        height: 620px;
+
         /*background-color: rgba(0, 0, 0, 0.85);*/
         /*background-color: #1DE9B6;*/
         /*border-radius: 5px;*/
@@ -83,30 +82,19 @@
         height: 6px;
         /*background-color: #691a99;*/
         /*background-color: white;*/
-        
       }
 
       .at2 {
         height: 1px;
         /*background-color: grey;*/
       }
-
-      .drawer-head {
-        text-align: left;
-        margin-left: 10%;
-      }
-
-      .option {
-        height: 48px;
-        width: 48px;
-      }
     </style>
     <app-drawer-layout>
       <app-header-layout>
         <app-header slot="header">
-          <app-toolbar class=at1>
-            <!--<paper-progress value="30" indeterminate bottom-item></paper-progress>-->
-          </app-toolbar>
+          <!--<app-toolbar class=at1>-->
+          <!--<paper-progress value="30" indeterminate bottom-item></paper-progress>-->
+          <!--</app-toolbar>-->
           <app-toolbar>
             <iron-icon class='common' icon="track-changes"></iron-icon>
             <div main-title>
@@ -114,10 +102,10 @@
             </div>
             <!--<paper-progress value="30" indeterminate bottom-item></paper-progress>-->
           </app-toolbar>
-          <app-toolbar class=at2>
+          <!--<app-toolbar class=at2>
           </app-toolbar>
           <app-toolbar class=at1>
-          </app-toolbar>
+          </app-toolbar>-->
 
         </app-header>
 
