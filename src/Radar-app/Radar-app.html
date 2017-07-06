@@ -11,139 +11,103 @@
 <link rel="import" href="../Radar-app/right-frame/radar-control.html">
 
 <dom-module id='radar-app'>
-  <template>
-    <style include="app-grid-style">
-       :host {
-        display: block;
-        --app-grid-columns: 3;
-        --app-grid-expandible-item-columns: 2;
-        --app-grid-gutter: 10px;
-      }
-
-      app-header {
-        height: 8em;
-      }
-
-
-      app-toolbar {
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.85);
-        padding-left: 2%;
-        color: whitesmoke;
-      }
-      /*paper-progress {
+    <template>
+        <style include="app-grid-style">
+             :host {
+                display: block;
+                height: 80%;
+                --app-grid-columns: 3;
+                --app-grid-expandible-item-columns: 2;
+                --app-grid-gutter: 10px;
+                --app-grid-item-height: 57%;
+            }
+            /*paper-progress {
         display: block;
         width: 100%;
         --paper-progress-active-color: rgba(255, 255, 255, 0.5);
         --paper-progress-container-color: transparent;
       }*/
 
-      paper-icon-button {
-        --paper-icon-button-ink-color: white;
-      }
+            paper-icon-button {
+                --paper-icon-button-ink-color: white;
+            }
 
-      iron-icon {
-        margin-right: 2%;
-      }
+            iron-icon {
+                margin-right: 2%;
+            }
 
-      iron-icon.common {
-        --iron-icon-height: 32px;
-        --iron-icon-width: 32px;
-      }
+            iron-icon.common {
+                --iron-icon-height: 32px;
+                --iron-icon-width: 32px;
+            }
 
-      ul {
-        display: relative;
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        /*list-style: none;*/
-      }
+            .text {
+                font-size: 1.6em;
+            }
+
+            ul {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+                list-style: none;
+            }
+
+            .left-frame {
+                background-color: rgba(255, 255, 255, 0.7);
+                margin: 0 auto;
+                margin-bottom: 10px;
+                min-width: 355px;
+                min-height: 600px;
+                border-radius: 5px;
+                /*overflow: hidden;*/
+            }
+
+            .left-frame:first-child {
+                --app-grid-item-height: 115%;
+            }
 
 
-      .left-frame {
-        /*background-color: rgba(255, 255, 255, 0.5);*/
-        background-color: rgba(0, 0, 0, 0.9);
-        border-radius: 5px;
-
-        /*min-width:50%;*/
-        /*background-color: #E0E0E0;*/
-      }
-
-      .right-frame {
-        @apply --app-grid-expandible-item;
-        background-color: rgba(255, 255, 255, 0.7);
-
-        /*background-color: rgba(0, 0, 0, 0.85);*/
-        /*background-color: #1DE9B6;*/
-        /*border-radius: 5px;*/
-      }
-
-      .at1 {
-        height: 6px;
-        /*background-color: #691a99;*/
-        /*background-color: white;*/
-      }
-
-      .at2 {
-        height: 1px;
-        /*background-color: grey;*/
-      }
-    </style>
-    <app-drawer-layout>
-      <app-header-layout>
-        <app-header slot="header">
-          <!--<app-toolbar class=at1>-->
-          <!--<paper-progress value="30" indeterminate bottom-item></paper-progress>-->
-          <!--</app-toolbar>-->
-          <app-toolbar>
-            <iron-icon class='common' icon="track-changes"></iron-icon>
-            <div main-title>
-              <h1>Radar Stream</h1>
+            .right-frame {
+                @apply --app-grid-expandible-item;
+                background-color: rgba(255, 255, 255, 0.7);
+                margin: 0 auto;
+                min-width: 355px;
+                min-height: 600px;
+                overflow: hidden;
+            }
+        </style>
+        <div class="app-grid" has-aspect-ratio>
+            <div class="left-frame text">
+                <radar-monitor></radar-monitor>
             </div>
-            <!--<paper-progress value="30" indeterminate bottom-item></paper-progress>-->
-          </app-toolbar>
-          <!--<app-toolbar class=at2>
-          </app-toolbar>
-          <app-toolbar class=at1>
-          </app-toolbar>-->
+            <div class="right-frame text">
+                <radar-control></radar-control>
+            </div>
+        </div>
+    </template>
 
-        </app-header>
+    <script>
+        /**
+         * @customElement
+         * @polymer
+         */
+        var mon_p;
+        var ctl_p;
+        class radarapp extends Polymer.Element {
+            static get is() {
+                return 'radar-app';
+            }
+            static get properties() {
+                return {
+                    prop1: {
+                        type: String,
+                        value: 'radar-app'
+                    }
+                };
+            }
+        }
 
-        <ul class="app-grid">
-          <li class="left-frame">
-            <radar-monitor></radar-monitor>
-          </li>
-          <li class="right-frame">
-            <radar-control></radar-control>
-          </li>
-        </ul>
-
-
-      </app-header-layout>
-    </app-drawer-layout>
-  </template>
-
-  <script>
-    /**
-     * @customElement
-     * @polymer
-     */
-    var mon_p;
-    var ctl_p;
-    class radarapp extends Polymer.Element {
-      static get is() {
-        return 'radar-app';
-      }
-      static get properties() {
-        return {
-          prop1: {
-            type: String,
-            value: 'radar-app'
-          }
-        };
-      }
-    }
-
-    window.customElements.define(radarapp.is, radarapp);
-  </script>
+        window.customElements.define(radarapp.is, radarapp);
+    </script>
 </dom-module>

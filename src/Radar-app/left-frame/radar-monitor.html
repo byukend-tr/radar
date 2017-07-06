@@ -18,10 +18,9 @@
     <template>
         <style>
              :host {
+                background-color: rgba(0, 0, 0, 0.8);
+                height: 100%;
             }
-            /*app-drawer-layout:not([narrow]) [drawer-toggle] {
-                    display: none;                
-                }*/
 
             app-toolbar {
                 color: white;
@@ -31,9 +30,9 @@
                 --app-drawer-content-container: {
                     position: fixed;
                     background-color: whitesmoke;
-                    /*--app-drawer-scrim-background: rgba(0, 0, 100, 0.8);*/
                 }
             }
+
 
             .drawer li {
                 text-align: left;
@@ -46,28 +45,22 @@
                 padding-left: 10%;
             }
 
-            .ani {
-                margin: 0;
-                /*width: 100%;*/
-                color: rgba(255, 255, 255, 0.8);
-                /*padding-left: 60px;*/
+            .animation {
+                display: block;
+                width: 100%;
+                height: 100%;
             }
 
-            .crop {
-                position: relative;
-                text-align: center;
-            }
-
-            .crop img {
-                width: 90%;
+            .panel1 img {
+                width: 80%;
                 margin: 0 auto;
-                /*margin-bottom: -4.2%;*/
             }
 
-            .crop paper-progress {
+            .panel1 paper-progress {
+                /*left: 10%;*/
+                z-index: 200;
                 margin: 0 auto;
-                /*padding-left: 5%;*/
-                width: 90%;
+                width: 80%;
                 --paper-progress-active-color: rgba(200, 200, 200, 0.7);
                 --paper-progress-container-color: grey;
                 --paper-progress-transition-duration: 0.5s;
@@ -76,37 +69,65 @@
                 --paper-progress-indeterminate-cycle-duration: 3s;
             }
 
+            paper-icon-button {
+                color: rgba(255, 255, 255, 0.8);
+                width: 5em;
+                height: 5em;
+            }
 
-            paper-slider {
-                --paper-slider-height: 0.4rem;
+            .control {
+                width: 100%;
+                height: 100%;
+                text-align: center;
+                /*margin-top: 85%;*/
+            }
+
+            .panel2 {
+                margin: 0 auto;
+                margin-top: -1.7em;
+            }
+
+            .panel3 {
+                font-size: 1.6em;
+                color: white;
+                padding-top: 7%;
+            }
+
+            .slide {
+                width: 85.6%;
+                min-width: 318px;
+                margin: 0 auto;
+                margin-bottom: -2%;
+            }
+
+
+            .slide paper-slider {
+                /*position: absolute;*/
+                /*top: 80%;*/
+                width: 100%;
+                --paper-slider-height: 0.4em;
                 --paper-slider-active-color: red;
                 --paper-slider-knob-color: red;
                 --paper-slider-knob-start-color: red;
                 --paper-slider-knob-start-border-color: red;
                 --paper-slider-secondary-color: var(--paper-grey-400);
-                width: 96.2%;
-                margin: 0 auto;
-            }
-
-            paper-icon-button {
-                color: rgba(255, 255, 255, 0.8);
-                width: 10%;
-                height: 10%;
             }
 
             .time {
                 color: white;
-                padding-left: 10%;
-                padding-top: 1%;
+            }
+
+            .text {
+                font-size: 2em;
             }
 
             .play {
-                width: 12%;
-                height: 12%;
+                width: 6em;
+                height: 6em;
             }
 
             .opt {
-                padding: 3% 0 0 6%;
+                padding: 3% 0 2% 6%;
                 color: white;
             }
         </style>
@@ -114,20 +135,30 @@
         <div class='main'>
             <iron-ajax id="ajaxReq" url="[[url]]" handle-as="json" on-response="_loadImgComplete" last-response="{{imgList}}"></iron-ajax>
 
-            <div class='opt'>Stream : [[option]]</div>
-            <div class="crop">
-                <paper-progress indeterminate></paper-progress>
-                <img id='map' src="data:image/png;base64,{{image}}">
-                <paper-slider id='slider' value={{ratio}} max=[[max]] min='[[min]]' on-immediate-value-changed='_dragging' pin=true></paper-slider>
-                <paper-icon-button icon='av:skip-previous' on-click='_previous'> </paper-icon-button>
-                <paper-icon-button icon='av:replay' on-click='_reload'> </paper-icon-button>
-                <paper-icon-button class='play' icon=[[play]] on-click='_playAndPause'> </paper-icon-button>
-                <paper-icon-button icon='av:stop' on-click='_stop'> </paper-icon-button>
-                <paper-icon-button icon='av:skip-next' on-click='_next'> </paper-icon-button>
+            <div class='opt text'>Stream : [[option]]</div>
+            <div class="animation">
+                <div class="control">
+                    <div class="panel1">
+                        <paper-progress indeterminate></paper-progress>
+                        <img id='map' src="data:image/png;base64,{{image}}">
+                    </div>
+                    <div class="panel2">
+                        <div class="slide">
+                            <paper-slider id='slider' value={{ratio}} max=[[max]] min='[[min]]' on-immediate-value-changed='_dragging' pin=true></paper-slider>
+                        </div>
+                        <paper-icon-button icon='av:skip-previous' on-click='_previous'> </paper-icon-button>
+                        <paper-icon-button icon='av:replay' on-click='_reload'> </paper-icon-button>
+                        <paper-icon-button class='play' icon=[[play]] on-click='_playAndPause'> </paper-icon-button>
+                        <paper-icon-button icon='av:stop' on-click='_stop'> </paper-icon-button>
+                        <paper-icon-button icon='av:skip-next' on-click='_next'> </paper-icon-button>
+                    </div>
+                    <div class='panel3'>
+                        <b style="font-size:1.2em">The captured time : </b>[[ts]]
+                    </div>
+                </div>
+
             </div>
-            <div class='time'>
-                <b>Frame captured time:</b><br> [[ts]]
-            </div>
+
 
 
         </div>
@@ -305,8 +336,8 @@
                     });
                 }
                 zip.generateAsync({
-                    type: "blob"
-                })
+                        type: "blob"
+                    })
                     .then(function (content) {
                         // see FileSaver.js
                         saveAs(content, "radar-stream.zip");
