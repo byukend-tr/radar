@@ -5,8 +5,6 @@
 <link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../../bower_components/iron-icons/av-icons.html">
 <link rel="import" href="../../../bower_components/paper-progress/paper-progress.html">
-<link rel="import" href="../../../bower_components/nebula-loader/nebula-loader.html">
-<link rel="import" href="../../../bower_components/nebula-icons/nebula-icons.html">
 <link rel="import" href="../../../bower_components/paper-spinner/paper-spinner.html">
 <script type="text/javascript" src="../../../bower_components/jszip/dist/jszip.js"></script>
 <script type="text/javascript" src="../../../bower_components/jszip/vendor/FileSaver.js"></script>
@@ -78,11 +76,15 @@
             .control {
                 width: 100%;
                 height: 100%;
-                text-align: center;
                 /*margin-top: 85%;*/
             }
 
+            .panel1 {
+                text-align: center;
+            }
+
             .panel2 {
+                text-align: center;
                 margin: 0 auto;
                 margin-top: -1.7em;
             }
@@ -91,10 +93,11 @@
                 font-size: 1.6em;
                 color: white;
                 padding-top: 7%;
+                padding-left: 15%;
             }
 
             .slide {
-                width: 85.6%;
+                width: 85.4%;
                 min-width: 318px;
                 margin: 0 auto;
                 margin-bottom: -2%;
@@ -134,6 +137,8 @@
 
         <div class='main'>
             <iron-ajax id="ajaxReq" url="[[url]]" handle-as="json" on-response="_loadImgComplete" last-response="{{imgList}}"></iron-ajax>
+            <iron-ajax id="ajaxChk" url=[[url_chk]] handle-as="json" last-response="{{imgChk}}"></iron-ajax>
+
 
             <div class='opt text'>Stream : [[option]]</div>
             <div class="animation">
@@ -153,7 +158,7 @@
                         <paper-icon-button icon='av:skip-next' on-click='_next'> </paper-icon-button>
                     </div>
                     <div class='panel3'>
-                        <b style="font-size:1.2em">The captured time : </b>[[ts]]
+                        <b style="font-size:1.2em">Captured time : </b><br>[[ts]]
                     </div>
                 </div>
 
@@ -170,8 +175,16 @@
             is: 'radar-monitor',
             properties: {
                 imgList: JSON,
+                imgChk: {
+                    type: JSON,
+                    observer: "_chkContent",
+                },
                 image: String,
-                max: Number,
+
+                max: {
+                    type: Number,
+                    value: -1,
+                },
                 min: {
                     type: Number,
                     value: 1,
@@ -193,6 +206,11 @@
                     observer: '_pull'
                 },
                 url: String,
+                url_option: String,
+                url_chk: {
+                    type: String,
+                    value: "http://bigmaster.igridproject.info:19080/v0.1/storage/igrid.rainradar.nkm/objects?last=1&&field=meta"
+                },
                 init: {
                     type: Boolean,
                     value: true,
@@ -214,8 +232,9 @@
             _loadImgComplete: function (e) {
                 this.option = ctl_p.option;
                 mon_p = this; // use for ref. to radar-control
-                if (typeof this.imgList == 'undefined') return;
+                // if (typeof this.imgList == 'undefined') return;
                 this.max = this.imgList.length; //max of progress frame
+                this._previous();
                 // console.log("MAX:" + this.max)
                 // this.min = this.imgList.length - 23;
                 // console.log(this.imgList.length);
@@ -232,12 +251,9 @@
                     this._reload();
                     this.ratio = this.max;
                 }
-                console.log("complete")
-
+                console.log("Complete!")
 
                 this._getMinutes();
-
-
             },
             _play: function (e) {
                 if (!this.still) return;
@@ -297,7 +313,7 @@
             },
             _getMinutes() {
                 this.async(function () {
-                    this.ajax_load = this.$.ajaxReq.loading;
+                    // this.ajax_load = this.$.ajaxReq.loading;
                     this.minutes = (new Date()).getMinutes();
                     // console.log(this.minutes)
                     this._getMinutes();
@@ -306,14 +322,31 @@
             _minutesChanged() {
                 if (this.init) return;
                 // if (this.minutes % 5 == 0) 
-                this._pull();
+                this.$.ajaxChk.generateRequest();
+            },
+            _chkContent() {
+                console.log("Checking...");
+                if (typeof this.imgList == 'undefined') {
+                    console.log("Initialize.");
+                    this._pull();
+                } else if (this.imgList[this.max - 1].meta._ts == this.imgChk[0].meta._ts) {
+                    console.log("No content update.");
+                } else {
+                    this._pull();
+                    console.log("Updating content...");
+                }
+
             },
             _pull() {
-                console.log("requesting...")
-                console.log("GET")
+
+
+                console.log("requesting...");
+                console.log("GET");
+                this.url_option = "last=";
                 this.url =
-                    "http://bigmaster.igridproject.info:19080/v0.1/storage/igrid.rainradar.nkm/objects?last=" +
-                    this.last;
+                    "http://bigmaster.igridproject.info:19080/v0.1/storage/igrid.rainradar.nkm/objects?" +
+                    this
+                    .url_option + this.last;
                 console.log(this.url)
                 // console.log(this.$)
                 this.$.ajaxReq.generateRequest();
@@ -323,7 +356,7 @@
                     // alert('loading')
                 } else {
                     // alert('complete')
-                    this.ratio = this.max;
+                    // this.ratio = this.max;
                 }
             },
             create_zip() {
@@ -346,7 +379,8 @@
             _downloadImg() {
                 /* download image */
                 // console.log(this.still)
-                uriContent = "data:application/octet-stream;base64," + encodeURIComponent(this.imgList[this.ratio -
+                uriContent = "data:application/octet-stream;base64," + encodeURIComponent(this.imgList[
+                    this.ratio -
                     1].data.data);
                 window.open(uriContent, "radar-stream.jpg");
             }

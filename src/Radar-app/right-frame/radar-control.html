@@ -7,8 +7,11 @@
 <link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../../../bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="../../../bower_components/paper-menu-button/paper-menu-button.html">
+
 
 <dom-module id="radar-control">
     <template>
@@ -17,7 +20,11 @@
                 display: block;
                 background-color: rgba(0, 0, 0, 0.8);
                 height: 100%;
-                font-size: 1.2em;
+                font-size: 1.3em;
+                --paper-menu-button-dropdown: {
+                    width: 13%;
+                    padding: 3.2% 0 0 0.42%;
+                }
             }
             /*app-header-layout {
                 padding-bottom: 0px;
@@ -25,9 +32,9 @@
             }*/
 
             app-toolbar {
-                height: 20%;
+                height: 18%;
                 /*background-color: rgba(0, 0, 0, 0.8);*/
-                padding-left: 2%;
+                padding-left: 3%;
                 color: whitesmoke;
             }
 
@@ -36,8 +43,7 @@
             }
 
             iron-icon {
-                margin-right: 2%;
-                padding-right: 5%;
+                padding-right: 2%;
             }
 
             iron-icon.common {
@@ -45,34 +51,7 @@
                 --iron-icon-width: 32px;
             }
 
-            ul {
-                margin-top: 0;
-                margin-bottom: 0%;
-                padding: 0;
-                list-style: none;
-            }
-
-            app-drawer {
-                --app-drawer-content-container: {
-                    color: black;
-                    top: 23.1em;
-                    bottom: auto;
-                    /*margin-right:0.59%;*/
-                    margin-right: 10.2px;
-                    padding: 20px;
-                }
-            }
-
-            app-drawer div.title {
-                font-size: 28px;
-                text-align: left;
-                cursor: default;
-            }
-
             paper-item.showtime {
-                width: 98%;
-                left: -20px;
-                padding-left: 30px;
                 cursor: pointer;
             }
 
@@ -84,41 +63,28 @@
                 padding: 0;
             }
 
-
-            p {
-                font-size: 12px;
-                padding-left: 10px;
-            }
-
-            h3 {
-                display: inline-block;
-            }
-
             .opt {
                 color: rgba(255, 255, 255, 0.5)
             }
+
 
 
             .text {
                 font-size: 2em;
             }
 
-            .drawer-head {
-                text-align: left;
-                margin-left: 10%;
-            }
-
             #time {
+                float: right;
                 padding-left: 1%;
+                padding-right: 1%;
                 font-size: 16px;
+                color: white;
                 /*border-bottom: 2px solid*/
             }
 
             .main {
                 font-size: 1em;
-                padding: 2em;
-                /*background-color: rgba(0, 0, 0, 0.8);*/
-                /*height: 450px;*/
+                padding: 2% 2% 0;
                 color: white;
             }
 
@@ -129,51 +95,59 @@
             .download {
                 position: absolute;
                 bottom: 0;
+                width: 100%;
+
                 padding: 2%;
-                width: 50%;
             }
 
             .download paper-button {
-                background: #43A047;
-                width: 25%;
+                display: inline-block;
+                width: 40%;
+                min-width: 350px;
+                color: black;
+                background: rgba(255, 255, 255, 1);
+            }
+
+            paper-menu-button {
+                padding-right: 3%;
+            }
+
+            .time-option paper-button {
+                background: rgba(0, 0, 0, 0.6);
+                width: 110%;
+                margin: 0;
+            }
+
+            h1 {
+                display: inline-block;
             }
         </style>
 
-        <app-drawer-layout id='layout' force-narrow>
-            <app-drawer id='drawer' slot='drawer' align='right'>
-                <div class='title'><b>Timeline
-                    <iron-icon icon='icons:timeline'></iron-icon></b>
-                </div>
-                <hr></hr>
-                <paper-listbox class='menu' attr-for-selected="value" selected={{option}} id='listbox'>
-                    <paper-item class='showtime' value='The past hour' drawer-toggle>The past hour</paper-item>
-                    <paper-item class='showtime' value='The past 2 hours' drawer-toggle>The past 2 hours</paper-item>
-                    <paper-item class='showtime' value='The past 12 hours' drawer-toggle>The past 12 hours</paper-item>
-                    <paper-item class='showtime' value='Custom' drawer-toggle>Custom</paper-item>
-                </paper-listbox>
-            </app-drawer>
-            </app-toolbar>-->
-            <app-toolbar>
-                <div main-title>
-                    <h1>Panel <small class='opt'><small><small>[[option]]</small></small>
-                        </small>
-                    </h1>
 
-                </div>
-                <div>
-                    <paper-icon-button id='drawerButton' icon='menu' drawer-toggle></paper-icon-button>
-                </div>
-            </app-toolbar>
-            <app-toolbar>
-                <div id="time">Current timestamp : [[date]]</div>
-            </app-toolbar>
-            <hr></hr>
-        </app-drawer-layout>
+        <app-toolbar>
+            <div main-title>
+                <h1>Information</h1>
+
+            </div>
+            <paper-menu-button class="time-option ">
+                <paper-button slot="dropdown-trigger" raised>
+                    <iron-icon icon="icons:timeline"></iron-icon>
+                    <span style="display: flex">[[option]]</span>
+                </paper-button>
+                <paper-listbox slot="dropdown-content" class="dropdown-content" attr-for-selected="value" selected={{option}} id='listbox'>
+                    <paper-item class='showtime' value='The past hour'>The past hour</paper-item>
+                    <paper-item class='showtime' value='The past 2 hours'>The past 2 hours</paper-item>
+                    <paper-item class='showtime' value='The past 12 hours'>The past 12 hours</paper-item>
+                    <paper-item class='showtime' value='Custom'>Custom</paper-item>
+                </paper-listbox>
+            </paper-menu-button>
+
+        </app-toolbar>
+        <div id="time">[[date]]</div>
+        <hr></hr>
 
         <!--INFOMATION-->
         <div class='main text'>
-            <h2>Information :</h2>
-
             <table style="padding-left:20px">
                 <tr height="40">
                     <th>
@@ -215,7 +189,7 @@
             <!--DOWNLOAD-->
             <div class="download">
                 <paper-button on-tap="_downloadAll" raised>
-                    <iron-icon icon='icons:archive'></iron-icon>download all</paper-button>
+                    <iron-icon icon='icons:archive'></iron-icon>download all (.zip)</paper-button>
                 <paper-button on-tap="_download" raised>
                     <iron-icon icon='icons:archive'></iron-icon>download current</paper-button>
             </div>
@@ -223,7 +197,7 @@
 
 
     </template>
-
+    {% endverbatim %}
     <script>
         Polymer({
             is: 'radar-control',
@@ -278,10 +252,6 @@
                 if (typeof mon_p == 'undefined') return;
                 // this.ajax_load  = mon_p.$.ajaxReq.    
 
-                // console.log(this.$.layout.forceNarrow)
-                // if (this.option == 'The past hour') mon_p.min = 144 - 11;
-                // else if (this.option == 'The past 2 hours') mon_p.min = 144 - 23;
-                // else if (this.option == 'The past 12 hours') mon_p.min = 1;
                 if (this.option == 'The past hour') mon_p.last = 13;
                 else if (this.option == 'The past 2 hours') mon_p.last = 25;
                 else if (this.option == 'The past 12 hours') mon_p.last = 145;

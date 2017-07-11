@@ -17,12 +17,9 @@
     "paper-listbox": "^2.0.0",
     "paper-button": "^2.0.0",
     "paper-spinner": "^2.0.0",
-    "nebula-loader": "arsnebula/nebula-loader#^2.1.0",
-    "nebula-icons": "arsnebula/nebula-icons#^2.0.1",
-    "nebula-progress": "arsnebula/nebula-progress#^2.0.1",
-    "nebula-element-mixin": "arsnebula/nebula-element-mixin#^2.0.2",
-    "nebula-dialog": "arsnebula/nebula-dialog#^2.0.2",
-    "jszip": "Stuk/jszip#^3.1.3"
+    "jszip": "Stuk/jszip#^3.1.3",
+    "paper-dropdown-menu": "^2.0.0",
+    "paper-tabs": "^2.0.0"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#^6.0.0"
