@@ -16,12 +16,8 @@
     <template>
         <style>
              :host {
-                background-color: rgba(0, 0, 0, 0.8);
+                /* background-color: rgba(0, 0, 0, 0.8); */
                 height: 100%;
-            }
-
-            app-toolbar {
-                color: white;
             }
 
             app-drawer {
@@ -30,7 +26,6 @@
                     background-color: whitesmoke;
                 }
             }
-
 
             .drawer li {
                 text-align: left;
@@ -52,14 +47,15 @@
             .panel1 img {
                 width: 80%;
                 margin: 0 auto;
+                border: 1px solid;
             }
 
             .panel1 paper-progress {
                 /*left: 10%;*/
                 z-index: 200;
                 margin: 0 auto;
-                width: 80%;
-                --paper-progress-active-color: rgba(200, 200, 200, 0.7);
+                width: 80.4%;
+                --paper-progress-active-color: rgba(200, 200, 200, 0.9);
                 --paper-progress-container-color: grey;
                 --paper-progress-transition-duration: 0.5s;
                 /*--paper-progress-transition-timing-function: ease;*/
@@ -68,7 +64,7 @@
             }
 
             paper-icon-button {
-                color: rgba(255, 255, 255, 0.8);
+                color: rgba(255, 255, 255, 0.65);
                 width: 5em;
                 height: 5em;
             }
@@ -86,19 +82,20 @@
             .panel2 {
                 text-align: center;
                 margin: 0 auto;
-                margin-top: -1.7em;
+                margin: 0 9.8%;
+                margin-top: -1.8em;
+                background: rgba(0, 0, 0, 0.8);
             }
 
             .panel3 {
                 font-size: 1.6em;
-                color: white;
-                padding-top: 7%;
+                color: black;
+                padding-top: 6%;
                 padding-left: 15%;
             }
 
             .slide {
-                width: 85.4%;
-                min-width: 318px;
+                width: 100%;
                 margin: 0 auto;
                 margin-bottom: -2%;
             }
@@ -108,7 +105,7 @@
                 /*position: absolute;*/
                 /*top: 80%;*/
                 width: 100%;
-                --paper-slider-height: 0.4em;
+                --paper-slider-height: 0.5em;
                 --paper-slider-active-color: red;
                 --paper-slider-knob-color: red;
                 --paper-slider-knob-start-color: red;
@@ -131,24 +128,25 @@
 
             .opt {
                 padding: 3% 0 2% 6%;
-                color: white;
+                color: black;
             }
         </style>
 
         <div class='main'>
-            <iron-ajax id="ajaxReq" url="[[url]]" handle-as="json" on-response="_loadImgComplete" last-response="{{imgList}}"></iron-ajax>
+            <iron-ajax id="ajaxReq" url="[[url]]" handle-as="json" last-response="{{imgList}}"></iron-ajax>
+            <iron-ajax id="ajaxReqMeta" url="[[url]]" handle-as="json" on-response="_loadImgComplete" last-response="{{imgListMeta}}"></iron-ajax>
             <iron-ajax id="ajaxChk" url=[[url_chk]] handle-as="json" last-response="{{imgChk}}"></iron-ajax>
 
-
-            <div class='opt text'>Stream : [[option]]</div>
+            <div class='opt text'>Observer : [[option]]</div>
             <div class="animation">
                 <div class="control">
                     <div class="panel1">
                         <paper-progress indeterminate></paper-progress>
-                        <img id='map' src="data:image/png;base64,{{image}}">
+                        <img id='map' src="http://bigmaster.igridproject.info:19080/v0.1/object/igrid.rainradar.nkm.{{image_id}}/data?filetype=jpeg">
+                        <!--<img id='map' src="data:image/png;base64,{{image}}">-->
                     </div>
                     <div class="panel2">
-                        <div class="slide">
+                        <div class="slide" >
                             <paper-slider id='slider' value={{ratio}} max=[[max]] min='[[min]]' on-immediate-value-changed='_dragging' pin=true></paper-slider>
                         </div>
                         <paper-icon-button icon='av:skip-previous' on-click='_previous'> </paper-icon-button>
@@ -161,25 +159,24 @@
                         <b style="font-size:1.2em">Captured time : </b><br>[[ts]]
                     </div>
                 </div>
-
             </div>
-
-
-
         </div>
     </template>
-
 
     <script>
         Polymer({
             is: 'radar-monitor',
             properties: {
-                imgList: JSON,
+                imgList: {
+                    type: JSON,
+                },
+                imgListMeta: JSON,
                 imgChk: {
                     type: JSON,
                     observer: "_chkContent",
                 },
-                image: String,
+
+                image_id: String,
 
                 max: {
                     type: Number,
@@ -202,14 +199,17 @@
                 still: Boolean,
                 last: {
                     type: Number,
-                    value: 25,
                     observer: '_pull'
                 },
+                static_url: {
+                    observer: '_setURL',
+                },
                 url: String,
-                url_option: String,
+                url_option: {
+                    value: "last=",
+                },
                 url_chk: {
                     type: String,
-                    value: "http://bigmaster.igridproject.info:19080/v0.1/storage/igrid.rainradar.nkm/objects?last=1&&field=meta"
                 },
                 init: {
                     type: Boolean,
@@ -219,21 +219,25 @@
                     type: Number,
                     observer: '_minutesChanged',
                 },
-                option: String,
+                option: String, // time option
+                download_option: String,
                 ajax_load: {
                     type: Boolean,
                     observer: '_pageloading'
                 }
             },
             ready() {
-
+                mon_p = this;
             },
-
+            _setURL() {
+                this.url_option = "last=";
+                this.url_chk = this.static_url + '?' + this.url_option + "1&&field=meta";
+            },
             _loadImgComplete: function (e) {
                 this.option = ctl_p.option;
-                mon_p = this; // use for ref. to radar-control
+                // use for ref. to radar-control
                 // if (typeof this.imgList == 'undefined') return;
-                this.max = this.imgList.length; //max of progress frame
+                this.max = this.imgListMeta.length; //max of progress frame
                 this._previous();
                 // console.log("MAX:" + this.max)
                 // this.min = this.imgList.length - 23;
@@ -262,22 +266,23 @@
                 this.async(function () {
                     if (!this.still) return;
                     // console.log(this.ratio)
-                    if (this.ratio - 1 < this.imgList.length - 1) this._play(++this.ratio);
+                    if (this.ratio - 1 < this.imgListMeta.length - 1) this._play(++this.ratio);
                     else this._play(this.ratio);
                 }.bind(this), 100);
             },
             _dragging: function () {
                 // console.log(typeof this.imgList == 'undefined');
-                if (typeof this.imgList == 'undefined') return;
+                if (typeof this.imgListMeta == 'undefined') return;
                 // console.log(this.$.slider.immediateValue)
                 // console.log(this.still)
                 // console.log(this._play)
 
                 var index = this.$.slider.immediateValue - 1;
                 if (typeof ctl_p != 'undefined') ctl_p.ratio = index + 1;
-                this.image = this.imgList[index].data.data;
+                // console.log(this.imgList[index])
+                this.image_id = this.imgListMeta[index]._id;
 
-                this.ts = new Date(this.imgList[index].meta._ts * 1000)
+                this.ts = new Date(this.imgListMeta[index].meta._ts * 1000)
                 // console.log(this.image);
                 // if (this.ratio == this.max) this.ratio = 0;
             },
@@ -320,36 +325,37 @@
                 }, 1000);
             },
             _minutesChanged() {
+                // console.log(this.init)
                 if (this.init) return;
+                // console.log("_minutesChanged")
                 // if (this.minutes % 5 == 0) 
+                console.log(this.url_chk);
                 this.$.ajaxChk.generateRequest();
             },
             _chkContent() {
                 console.log("Checking...");
-                if (typeof this.imgList == 'undefined') {
+                if (typeof this.imgListMeta == 'undefined') {
                     console.log("Initialize.");
                     this._pull();
-                } else if (this.imgList[this.max - 1].meta._ts == this.imgChk[0].meta._ts) {
+                } else if (this.imgListMeta[this.max - 1].meta._ts == this.imgChk[0].meta._ts) {
                     console.log("No content update.");
                 } else {
+                    console.log("Contend updated");
                     this._pull();
-                    console.log("Updating content...");
                 }
 
             },
             _pull() {
-
-
+                if (typeof this.static_url == 'undefined') return;
                 console.log("requesting...");
                 console.log("GET");
-                this.url_option = "last=";
-                this.url =
-                    "http://bigmaster.igridproject.info:19080/v0.1/storage/igrid.rainradar.nkm/objects?" +
-                    this
-                    .url_option + this.last;
-                console.log(this.url)
+                this.url = this.static_url + '?' + this.url_option + this.last + "&&field=meta";
+                console.log(this.url);
                 // console.log(this.$)
+                this.$.ajaxReqMeta.generateRequest();
+                this.url = this.static_url + '?' + this.url_option + this.last;
                 this.$.ajaxReq.generateRequest();
+
             },
             _pageloading() {
                 if (this.ajax_load) {
@@ -359,7 +365,14 @@
                     // this.ratio = this.max;
                 }
             },
-            create_zip() {
+            __download() {
+                this.url = "http://bigmaster.igridproject.info:19080/v0.1/storage/igrid.rainradar.nkm/objects?" +
+                    this.url_option
+                this.$.ajaxReq.generateRequest();
+                if (this.download_option == "zip") this.__dlZip();
+                else if (this.download_option == "img") this.__dlImg();
+            },
+            __dlZip() {
                 var zip = new JSZip();
                 // zip.file("Hello.txt", "Hello World\n");
                 var img = zip.folder("images");
@@ -376,15 +389,15 @@
                         saveAs(content, "radar-stream.zip");
                     });
             },
-            _downloadImg() {
+            __dlImg() {
                 /* download image */
                 // console.log(this.still)
-                uriContent = "data:application/octet-stream;base64," + encodeURIComponent(this.imgList[
-                    this.ratio -
+                console.log(this.imgList)
+
+                uriContent = "data:application/octet-stream;base64," + encodeURIComponent(this.imgList[this.ratio -
                     1].data.data);
                 window.open(uriContent, "radar-stream.jpg");
-            }
-
+            },
         });
     </script>
 </dom-module>

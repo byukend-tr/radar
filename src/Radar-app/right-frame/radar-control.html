@@ -11,6 +11,10 @@
 <link rel="import" href="../../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../../../bower_components/paper-spinner/paper-spinner.html">
 <link rel="import" href="../../../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../../../bower_components/neon-animation/web-animations.html">
+<link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../../bower_components/paper-dropdown-menu/paper-dropdown-menu-light.html">
+
 
 
 <dom-module id="radar-control">
@@ -18,13 +22,16 @@
         <style>
              :host {
                 display: block;
-                background-color: rgba(0, 0, 0, 0.8);
+                /* background-color: rgba(0, 0, 0, 0.8); */
                 height: 100%;
                 font-size: 1.3em;
                 --paper-menu-button-dropdown: {
                     width: 13%;
+                    max-height: 30%;
                     padding: 3.2% 0 0 0.42%;
                 }
+                --paper-input-container-input-color:black;
+                --paper-input-container-focus-color:white;
             }
             /*app-header-layout {
                 padding-bottom: 0px;
@@ -34,8 +41,12 @@
             app-toolbar {
                 height: 18%;
                 /*background-color: rgba(0, 0, 0, 0.8);*/
+                color: white;
                 padding-left: 3%;
-                color: whitesmoke;
+            }
+
+            app-toolbar [main-title] {
+                color: black;
             }
 
             paper-icon-button {
@@ -56,12 +67,13 @@
             }
 
             hr {
-                background-color: white
-            }
-
-            paper-listbox {
+                background-color: white;
+                margin: 0;
                 padding: 0;
             }
+            /* paper-listbox {
+                padding: 0;
+            } */
 
             .opt {
                 color: rgba(255, 255, 255, 0.5)
@@ -74,18 +86,21 @@
             }
 
             #time {
-                float: right;
-                padding-left: 1%;
-                padding-right: 1%;
+                position: absolute;
+                left: 280px;
+                top: 62px;
                 font-size: 16px;
-                color: white;
+                color: black;
+                background:#FFEB3B;
+                border-radius:25px;
+                padding: 0 10   px;
                 /*border-bottom: 2px solid*/
             }
 
             .main {
                 font-size: 1em;
                 padding: 2% 2% 0;
-                color: white;
+                color: black;
             }
 
             .text {
@@ -113,7 +128,7 @@
             }
 
             .time-option paper-button {
-                background: rgba(0, 0, 0, 0.6);
+                background: rgba(0, 0, 0, 0.7);
                 width: 110%;
                 margin: 0;
             }
@@ -121,66 +136,117 @@
             h1 {
                 display: inline-block;
             }
+
+            paper-dropdown-menu-light {
+                display: block;
+            }
+
+            ._submit {
+                display: inline-block;
+            }
+
+            .submit {
+                text-align: center;
+                height: 35px;
+                padding: 2px auto;
+                margin: 0 auto;
+                background-color: rgba(0, 0, 0, 0.8);
+                color: white;
+            }
+
+
+
+            #dialog --paper-menu-button-dropdown {
+                width: 5%;
+                padding: 20.2% 0 0 0.42%;
+            }
+
+            #url {
+                width: 575px;
+                min-width: 200px;
+                margin-top: -15px;
+            }
+
+            td>*,
+            th>* {
+                vertical-align: bottom;
+            }
+
+            .info {
+                font-size: 0.8em;
+                padding-left: 5px;
+            }
         </style>
 
-
+        <!-- TITLE -->
         <app-toolbar>
             <div main-title>
                 <h1>Information</h1>
-
             </div>
-            <paper-menu-button class="time-option ">
+            <div id="time">[[date]]</div>
+            <paper-menu-button class="time-option" id="menu_option">
                 <paper-button slot="dropdown-trigger" raised>
                     <iron-icon icon="icons:timeline"></iron-icon>
-                    <span style="display: flex">[[option]]</span>
+                    <span>[[option]]</span>
                 </paper-button>
-                <paper-listbox slot="dropdown-content" class="dropdown-content" attr-for-selected="value" selected={{option}} id='listbox'>
+                <paper-listbox slot="dropdown-content" class="dropdown-content" attr-for-selected="value" selected={{option}} id='listbox'
+                    on-tap="_optionSelect">
                     <paper-item class='showtime' value='The past hour'>The past hour</paper-item>
                     <paper-item class='showtime' value='The past 2 hours'>The past 2 hours</paper-item>
                     <paper-item class='showtime' value='The past 12 hours'>The past 12 hours</paper-item>
-                    <paper-item class='showtime' value='Custom'>Custom</paper-item>
+                    <paper-item class='showtime' value='Custom' on-click="_openDialog">Custom</paper-item>
                 </paper-listbox>
             </paper-menu-button>
-
         </app-toolbar>
-        <div id="time">[[date]]</div>
+
         <hr></hr>
 
-        <!--INFOMATION-->
+        <!--INFORMATION-->
         <div class='main text'>
-            <table style="padding-left:20px">
+            <table style="padding-left:40px">
                 <tr height="40">
-                    <th>
+                    <th width="160" align=left>
+                        Storage
+                    </th>
+                    <td>:</td>
+                    <td>
+                        <div id='url'>
+                            <paper-input on-value-changed="__inputURL" value={{url}}></paper-input>
+                        </div>
+                    </td>
+                </tr>
+                <tr height="40">
+                    <th align=left>
                         Time range
                     </th>
                 </tr>
                 <tr>
                     <td style="padding-left:20px">From </td>
                     <td>:</td>
-                    <td style="padding-left:5px"> [[t1]] </td>
+                    <td class="info"> [[t1]] </td>
                 </tr>
                 <tr>
                     <td style="padding-left:20px">To </td>
                     <td>:</td>
-                    <td style="padding-left:5px"> [[t2]] </td>
+                    <td class="info"> [[t2]] </td>
                 </tr>
                 <tr height="40">
-                    <th>
+                    <th align=left>
                         Total Frame
                     </th>
                     <td>:</td>
 
-                    <td style="padding-left:5px">
+                    <td class="info">
                         [[max]]
                     </td>
                 </tr>
 
                 <tr height="40">
-                    <th>
+                    <th align=left>
                         Current Frame
                     </th>
                     <td>:</td>
-                    <td style="padding-left:5px">
+                    <td class="info">
                         #[[ratio]]
                     </td>
                 </tr>
@@ -195,16 +261,33 @@
             </div>
         </div>
 
+        <!-- OPEN DIALOG -->
+        <paper-dialog id="dropdownDialog" with-backdrop>
+            <h2>Custom</h2>
+            <paper-dropdown-menu-light label="Hour(s)">
+                <paper-listbox id="dialog" class="dropdown-content" slot="dropdown-content">
+                    <template is="dom-repeat" id="menu" items="{{menuItems}}">
+                        <div>
+                            <paper-item>{{item}}</paper-item>
+                        </div>
+                    </template>
+                </paper-listbox>
+            </paper-dropdown-menu-light>
+            <div class="_submit" style="text-align:center">
+                <paper-button class="submit" on-click="_submitDialog" dialog-confirm raised> OK</paper-button>
+                <paper-button class="submit" on-click="_submitDialog" dialog-dismiss raised> Cancel</paper-button>
+            </div>
+        </paper-dialog>
+
 
     </template>
-    {% endverbatim %}
     <script>
         Polymer({
             is: 'radar-control',
             properties: {
-                imgList: JSON,
-                image: {
-                    type: String,
+                url: {
+                    value: "http://bigmaster.igridproject.info:19080/v0.1/storage/igrid.rainradar.nkm/objects",
+                    observer: "_setURL"
                 },
                 max: Number,
                 ratio: Number,
@@ -225,7 +308,12 @@
                 ajax_load: {
                     type: Boolean,
                     observer: 'ajax_load',
+                },
+                menuItems: {
+                    type: Array,
+                    value: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
                 }
+
 
             },
 
@@ -233,15 +321,40 @@
                 ctl_p = this;
                 this._secondChange();
             },
+            _setURL() {
+                mon_p.static_url = this.url;
+            },
             _secondChange() {
-                if (typeof mon_p != 'undefined') {
+                if (typeof mon_p != "undefined" && typeof mon_p.imgListMeta != "undefined") {
                     this.max = mon_p.max;
-                    this.t1 = new Date(mon_p.imgList[0].meta._ts * 1000);
-                    this.t2 = new Date(mon_p.imgList[this.max - 1].meta._ts * 1000);
+                    this.t1 = new Date(mon_p.imgListMeta[0].meta._ts * 1000).toString();
+                    t = new Date(mon_p.imgListMeta[0].meta._ts * 1000);
+                    this.t1 = t.toLocaleTimeString([], {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            hour12: false
+                        }) + ' , ' + this.t1.substr(0, 4) + this.t1.substr(8, 3) + this.t1.substr(4, 4) + this.t1
+                        .substr(11, 4);
+                    this.t2 = new Date(mon_p.imgListMeta[this.max - 1].meta._ts * 1000).toString();
+                    t = new Date(mon_p.imgListMeta[this.max - 1].meta._ts * 1000);
+                    this.t2 = t.toLocaleTimeString([], {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            hour12: false
+                        }) + ' , ' + this.t2.substr(0, 4) + this.t2.substr(8, 3) + this.t2.substr(4, 4) + this.t2
+                        .substr(11, 4);
                 }
 
                 // console.log("ready")
-                this.date = new Date();
+                this.date = (new Date()).toString();
+                t = new Date();
+                this.date = this.date.substr(0, 4) + this.date.substr(8, 3) + this.date.substr(4, 4) +
+                    this.date.substr(11, 4) + ' , ' + t.toLocaleTimeString([], {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                        hour12: false
+                    });
                 this.async(function () {
                     this._secondChange();
                 }.bind(this), 1000);
@@ -255,6 +368,8 @@
                 if (this.option == 'The past hour') mon_p.last = 13;
                 else if (this.option == 'The past 2 hours') mon_p.last = 25;
                 else if (this.option == 'The past 12 hours') mon_p.last = 145;
+
+                mon_p.ratio = 0;
             },
             _test() {
                 console.log(this.$.spin)
@@ -266,13 +381,33 @@
 
             },
             _downloadAll() {
-                mon_p.create_zip();
+                mon_p.download_option = "zip";
+                mon_p.__download();
             },
             _download() {
-                mon_p._downloadImg();
+                mon_p.download_option = "img";
+                mon_p.__download();
+            },
+            _openDialog() {
+                this.$.dropdownDialog.open();
+
+            },
+            _submitDialog() {
+                if (this.$.dropdownDialog.closingReason.confirmed) {
+                    mon_p.last = 48;
+                }
+                this.$.dropdownDialog.close();
+
+            },
+            _optionSelect() {
+                this.$.menu_option.close();
+            },
+            __inputURL() {
+                setTimeout(function () {
+                    this.$.url.style.width = (this.url.length * 8) - 60 + 'px';
+                }.bind(this), 100);
+
             }
-
-
         });
     </script>
 </dom-module>

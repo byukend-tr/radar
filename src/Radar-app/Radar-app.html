@@ -54,12 +54,13 @@
             }
 
             .left-frame {
-                background-color: rgba(255, 255, 255, 0.7);
+                background-color: rgba(255, 255, 255,0.9);
                 margin: 0 auto;
                 margin-bottom: 10px;
                 min-width: 355px;
                 min-height: 600px;
-                border-radius: 5px;
+                 border:1px solid black; 
+                border-radius: 2px;
                 /*overflow: hidden;*/
             }
 
@@ -70,11 +71,13 @@
 
             .right-frame {
                 @apply --app-grid-expandible-item;
-                background-color: rgba(255, 255, 255, 0.7);
+                 background-color: rgba(255, 255, 255, 0.9); 
                 margin: 0 auto;
                 min-width: 355px;
                 min-height: 700px;
                 overflow: hidden;
+                border-radius: 2px;
+                border: 1px solid black;
             }
         </style>
         <div class="app-grid" has-aspect-ratio>
