@@ -18,8 +18,8 @@
                 height: 80%;
                 --app-grid-columns: 3;
                 --app-grid-expandible-item-columns: 2;
-                --app-grid-gutter: 10px;
-                --app-grid-item-height: 57%;
+                --app-grid-gutter: 20px;
+                --app-grid-item-height: 60%;
             }
             /*paper-progress {
         display: block;
@@ -54,30 +54,34 @@
             }
 
             .left-frame {
-                background-color: rgba(255, 255, 255,0.9);
+                background-color: transparent;
                 margin: 0 auto;
                 margin-bottom: 10px;
-                min-width: 355px;
-                min-height: 600px;
-                 border:1px solid black; 
+                min-width: 380px;
+                min-height: 720px;
                 border-radius: 2px;
                 /*overflow: hidden;*/
+                /* -webkit-box-shadow: -1px 1px 4px 1px #0F1406;
+                box-shadow: -1px 1px 4px 1px #0F1406; */
+                /* border: 1px solid rgba(158, 158, 158, 0.7);  */
             }
 
             .left-frame:first-child {
-                --app-grid-item-height: 115%;
+                --app-grid-item-height: 121%;
             }
 
 
             .right-frame {
                 @apply --app-grid-expandible-item;
-                 background-color: rgba(255, 255, 255, 0.9); 
+                background-color: rgba(255, 255, 255, 0.9);
                 margin: 0 auto;
-                min-width: 355px;
-                min-height: 700px;
+                min-width: 380px;
+                min-height: 750px;
                 overflow: hidden;
                 border-radius: 2px;
-                border: 1px solid black;
+                border: 1px solid rgba(158, 158, 158, 0.7);
+                /* -webkit-box-shadow: -1px 1px 4px 1px #0F1406;
+                box-shadow: -1px 1px 4px 1px #0F1406; */
             }
         </style>
         <div class="app-grid" has-aspect-ratio>
@@ -106,7 +110,7 @@
                     prop1: {
                         type: String,
                         value: 'radar-app'
-                    }
+                    },
                 };
             }
         }

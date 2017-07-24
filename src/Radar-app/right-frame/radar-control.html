@@ -14,8 +14,10 @@
 <link rel="import" href="../../../bower_components/neon-animation/web-animations.html">
 <link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../../../bower_components/paper-dropdown-menu/paper-dropdown-menu-light.html">
-
-
+<link rel="import" href="../../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../../bower_components/vaadin-grid/vaadin-grid.html">
+<script src='../../../bower_components/gifshot/dist/gifshot.js'></script>
+<!-- <script src='../../../bower_components/gif.js/dist/gif.js'></script> -->
 
 <dom-module id="radar-control">
     <template>
@@ -28,15 +30,25 @@
                 --paper-menu-button-dropdown: {
                     width: 13%;
                     max-height: 30%;
-                    padding: 3.2% 0 0 0.42%;
+                    padding: 3.2% 0 0 0.8%;
                 }
                 --paper-input-container-input-color:black;
                 --paper-input-container-focus-color:white;
             }
-            /*app-header-layout {
-                padding-bottom: 0px;
-                margin-bottom: 0px;
-            }*/
+
+            vaadin-grid {
+                height: 500px;
+                --vaadin-grid-cell: {
+                    padding: 4px;
+                }
+
+                --vaadin-grid-header-cell: {
+                    background: #FFEB3B;
+                    height: 30px;
+                    font-size: 1.2em;
+                    /* border: 1px solid rgba(66, 66, 66, 0.8); */
+                }
+            }
 
             app-toolbar {
                 height: 18%;
@@ -47,6 +59,7 @@
 
             app-toolbar [main-title] {
                 color: black;
+                text-shadow: -1px 1px 2px rgba(0, 0, 0, 0.5);
             }
 
             paper-icon-button {
@@ -71,30 +84,24 @@
                 margin: 0;
                 padding: 0;
             }
-            /* paper-listbox {
-                padding: 0;
-            } */
+
 
             .opt {
                 color: rgba(255, 255, 255, 0.5)
             }
-
-
 
             .text {
                 font-size: 2em;
             }
 
             #time {
-                position: absolute;
-                left: 280px;
-                top: 62px;
                 font-size: 16px;
+                width: 10%;
+                min-width: 200px;
                 color: black;
-                background:#FFEB3B;
-                border-radius:25px;
-                padding: 0 10   px;
-                /*border-bottom: 2px solid*/
+                padding: 0 10px;
+                display: flex;
+                float: left;
             }
 
             .main {
@@ -108,33 +115,25 @@
             }
 
             .download {
-                position: absolute;
-                bottom: 0;
+                /* position: absolute; */
+                /* bottom: 0; */
                 width: 100%;
-
-                padding: 2%;
+                padding: 1%;
             }
 
             .download paper-button {
                 display: inline-block;
-                width: 40%;
+                width: 95%;
+                text-align: center;
                 min-width: 350px;
-                color: black;
-                background: rgba(255, 255, 255, 1);
-            }
-
-            paper-menu-button {
-                padding-right: 3%;
+                color: white;
+                /* background: rgba(255, 255, 255, 1); */
+                background: rgba(0, 0, 0, 0.7);
             }
 
             .time-option paper-button {
                 background: rgba(0, 0, 0, 0.7);
                 width: 110%;
-                margin: 0;
-            }
-
-            h1 {
-                display: inline-block;
             }
 
             paper-dropdown-menu-light {
@@ -154,8 +153,6 @@
                 color: white;
             }
 
-
-
             #dialog --paper-menu-button-dropdown {
                 width: 5%;
                 padding: 20.2% 0 0 0.42%;
@@ -167,127 +164,264 @@
                 margin-top: -15px;
             }
 
-            td>*,
-            th>* {
-                vertical-align: bottom;
+            .info {
+                font-size: 1.2em;
+                padding: 2px;
+                width: 90%;
+                padding-left: 4%;
             }
 
-            .info {
-                font-size: 0.8em;
-                padding-left: 5px;
+            .by1 {
+                padding: 0 0 0 0;
+                background: #4CAF50;
+                color: white;
+                z-index: 9999;
+            }
+
+            .by2 {
+                padding: 0 0 0 0;
+                background: #FFEB3B;
+                color: black;
+                z-index: 9999;
+            }
+
+            .by3 {
+                padding: 0 0 0 0;
+                background: #03A9F4;
+                color: white;
+                z-index: 9999;
+            }
+
+            .spec1 {
+                padding: 0 0 0 0;
+                background: black;
+                color: white;
+                z-index: 9999;
+            }
+
+            .spec2 {
+                padding: 0 0 0 0;
+                background: white;
+                color: black;
+                z-index: 9999;
+            }
+
+            .cell {
+                height: 100%;
+                display: inline-flex;
+                flex-direction: column;
+                justify-content: center;
+                text-align: center;
+            }
+
+            .frozen {
+                background: lightgray;
+            }
+
+            .numeric {
+                text-align: right;
+            }
+
+            #setting {
+                height: 1.6em;
+                width: 1.6em;
+                color: rgba(0, 0, 0, 0.6);
+                padding: 0;
+                margin: 20px;
+            }
+
+            #alignedDialog {
+                width: 15%;
+                padding: 1% 0 0 1%;
+                margin: 0;
+                border-radius: 3px;
+            }
+
+            #alignedDialog paper-icon-button {
+                color: #4CAF50;
+            }
+
+            .right-panel {
+                display: flex;
+                padding-right: 7%;
+                flex-wrap: nowrap;
+                align-items: center;
+            }
+
+            .url,
+            h3 {
+                padding: 0;
+                width: 90%;
+                margin: 0;
+            }
+
+            .url_dialog {
+                padding: 0;
+                display: inline-flex;
+                width: 100%;
+            }
+
+            .id {
+                margin: 0 auto;
+                padding: 0;
+            }
+
+            .id:hover {
+                text-decoration: underline;
+                color: blue;
+            }
+            /* Tooltip text */
+
+            .id .tooltiptext {
+                visibility: hidden;
+                width: 80px;
+                background-color: #4CAF50;
+                color: #fff;
+                text-align: center;
+                padding: 2px 0;
+                /* Position the tooltip text - see examples below! */
+                position: absolute;
+                right: 0;
+                z-index: 1;
+            }
+            /* Show the tooltip text when you mouse over the tooltip container */
+
+            .id:hover .tooltiptext {
+                visibility: visible;
             }
         </style>
-
         <!-- TITLE -->
         <app-toolbar>
             <div main-title>
                 <h1>Information</h1>
             </div>
-            <div id="time">[[date]]</div>
-            <paper-menu-button class="time-option" id="menu_option">
-                <paper-button slot="dropdown-trigger" raised>
-                    <iron-icon icon="icons:timeline"></iron-icon>
-                    <span>[[option]]</span>
-                </paper-button>
-                <paper-listbox slot="dropdown-content" class="dropdown-content" attr-for-selected="value" selected={{option}} id='listbox'
-                    on-tap="_optionSelect">
-                    <paper-item class='showtime' value='The past hour'>The past hour</paper-item>
-                    <paper-item class='showtime' value='The past 2 hours'>The past 2 hours</paper-item>
-                    <paper-item class='showtime' value='The past 12 hours'>The past 12 hours</paper-item>
-                    <paper-item class='showtime' value='Custom' on-click="_openDialog">Custom</paper-item>
-                </paper-listbox>
-            </paper-menu-button>
+            <div id="time">[[__sub(date)]]</div>
+            <div class="right-panel">
+                <paper-icon-button id="setting" icon="icons:settings" onclick="openBy(this)">
+                </paper-icon-button>
+                <paper-dialog id="alignedDialog" no-overlap horizontal-align="left" vertical-align="top" with-backdrop>
+                    <h3>Storage name</h3>
+                    <div class="url_dialog">
+                        <paper-input class="url" id="storage" value={{storage}} no-label-float>{{storage}}</paper-input>
+                        <paper-icon-button icon="icons:check" on-click="__storage">
+                    </div>
+                </paper-dialog>
+                <div class="time-option">
+                    <paper-menu-button id="menu_option">
+                        <paper-button slot="dropdown-trigger" raised>
+                            <iron-icon icon="icons:timeline"></iron-icon>
+                            <span>[[option]]</span>
+                        </paper-button>
+                        <paper-listbox slot="dropdown-content" class="dropdown-content" attr-for-selected="value" selected={{option}} id='listbox'
+                            on-tap="_optionSelect">
+                            <paper-item class='showtime' value='The past hour'>The past hour</paper-item>
+                            <paper-item class='showtime' value='The past 2 hours'>The past 2 hours</paper-item>
+                            <paper-item class='showtime' value='The past 12 hours'>The past 12 hours</paper-item>
+                            <paper-item class='showtime' value='Custom' on-click="_openDialog">Custom</paper-item>
+                        </paper-listbox>
+                    </paper-menu-button>
+                </div>
+            </div>
         </app-toolbar>
 
-        <hr></hr>
-
         <!--INFORMATION-->
-        <div class='main text'>
-            <table style="padding-left:40px">
-                <tr height="40">
-                    <th width="160" align=left>
-                        Storage
-                    </th>
-                    <td>:</td>
-                    <td>
-                        <div id='url'>
-                            <paper-input on-value-changed="__inputURL" value={{url}}></paper-input>
+        <div class="info">
+            <vaadin-grid items='{{imgListMeta}}'>
+                <vaadin-grid-column width="70px" flex-grow="0">
+                    <template class="header">
+                        <div class="cell">Index</div>
+                    </template>
+                    <template>
+                        <div class="cell" name="[[index]]">[[index]]</div>
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column>
+                    <template class="header">
+                        <div class="cell">ID</div>
+                    </template>
+                    <template>
+                        <div class="cell">
+                            <div class="id" style="cursor:{{cursor}}" value="[[index]]" onclick="__idClick(this)">[[item._id]]
+                                <span class="tooltiptext">download</span>
+                            </div>
                         </div>
-                    </td>
-                </tr>
-                <tr height="40">
-                    <th align=left>
-                        Time range
-                    </th>
-                </tr>
-                <tr>
-                    <td style="padding-left:20px">From </td>
-                    <td>:</td>
-                    <td class="info"> [[t1]] </td>
-                </tr>
-                <tr>
-                    <td style="padding-left:20px">To </td>
-                    <td>:</td>
-                    <td class="info"> [[t2]] </td>
-                </tr>
-                <tr height="40">
-                    <th align=left>
-                        Total Frame
-                    </th>
-                    <td>:</td>
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column>
+                    <template class="header">
+                        <div class="cell">Date</div>
+                    </template>
+                    <template>
+                        <div class="cell">[[__showDate(item.meta._ts)]]</div>
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column>
+                    <template class="header">
+                        <div class="cell">Time</div>
+                    </template>
+                    <template>
+                        <div class="cell">[[__showTime(item.meta._ts)]]</div>
+                    </template>
+                </vaadin-grid-column>
+            </vaadin-grid>
+        </div>
 
-                    <td class="info">
-                        [[max]]
-                    </td>
-                </tr>
-
-                <tr height="40">
-                    <th align=left>
-                        Current Frame
-                    </th>
-                    <td>:</td>
-                    <td class="info">
-                        #[[ratio]]
-                    </td>
-                </tr>
-            </table>
-
+        <div class='main text'>
             <!--DOWNLOAD-->
             <div class="download">
                 <paper-button on-tap="_downloadAll" raised>
-                    <iron-icon icon='icons:archive'></iron-icon>download all (.zip)</paper-button>
-                <paper-button on-tap="_download" raised>
-                    <iron-icon icon='icons:archive'></iron-icon>download current</paper-button>
+                    <iron-icon icon='icons:archive'></iron-icon>download (.zip)
+                </paper-button>
+                <!-- <paper-button on-tap="_download" raised>
+                    <iron-icon icon='icons:archive'></iron-icon>download current
+                </paper-button> -->
             </div>
         </div>
 
         <!-- OPEN DIALOG -->
         <paper-dialog id="dropdownDialog" with-backdrop>
             <h2>Custom</h2>
-            <paper-dropdown-menu-light label="Hour(s)">
-                <paper-listbox id="dialog" class="dropdown-content" slot="dropdown-content">
-                    <template is="dom-repeat" id="menu" items="{{menuItems}}">
-                        <div>
-                            <paper-item>{{item}}</paper-item>
-                        </div>
-                    </template>
-                </paper-listbox>
-            </paper-dropdown-menu-light>
+            <div style="padding:3% 8%; margin:0 0 -30px 0;">
+                <paper-button id="by" class="by1" on-click="__byChange" raised>By hour </paper-button>
+                <paper-button id="spec" class="spec1" on-click="__toTime" raised>To time </paper-button>
+            </div>
+            <paper-input id="hour" label="hour(s)" type="number"></paper-input>
+            <paper-input id="frame" label="number of frame(s)" type="number"></paper-input>
+
+            <paper-input id="start" label="From" type="date"></paper-input>
+            <paper-input id="start1" label="Time" type="time" style="display:none"></paper-input>
+
+            <paper-input id="end" label="To" type="date"></paper-input>
+            <paper-input id="end1" label="From" type="time" style="display:none"></paper-input>
+
             <div class="_submit" style="text-align:center">
                 <paper-button class="submit" on-click="_submitDialog" dialog-confirm raised> OK</paper-button>
                 <paper-button class="submit" on-click="_submitDialog" dialog-dismiss raised> Cancel</paper-button>
             </div>
         </paper-dialog>
-
-
+        <!--http://bigmaster.igridproject.info:19080/v0.1/storage/igrid.rainradar.nck/stats
+        <!--http://bigmaster.igridproject.info:19080/v0.1/storage/igrid.rainradar.nck/object ?last?from?limit?
+        http://bigmaster.igridproject.info:19080/v0.1/object/igrid.rainradar.nkm.28687203000018705949e136/data?filetype=jpeg
+        -->
     </template>
     <script>
         Polymer({
             is: 'radar-control',
             properties: {
+                imgListMeta: JSON,
                 url: {
-                    value: "http://bigmaster.igridproject.info:19080/v0.1/storage/igrid.rainradar.nkm/objects",
+                    type: String,
                     observer: "_setURL"
+                },
+                static_url: {
+                    value: "http://bigmaster.igridproject.info:19080/v1/",
+                },
+                storage: {
+                    value: "igrid.rainradar.nkm",
+                },
+                download_list: {
+                    type: Array,
+                    value: [],
                 },
                 max: Number,
                 ratio: Number,
@@ -300,85 +434,60 @@
                     type: String,
                 },
                 option: {
-                    value: 'The past 2 hours',
-                    observer: '_timechanged'
+                    value: 'The past 12 hours',
+                    observer: '_timeChanged'
                 },
                 t1: String,
                 t2: String,
-                ajax_load: {
-                    type: Boolean,
-                    observer: 'ajax_load',
+                by_hour: {
+                    type: Number,
+                    value: 0,
+                    observer: "__switchBy",
                 },
-                menuItems: {
-                    type: Array,
-                    value: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
-                }
-
-
+                to_time: {
+                    type: Boolean,
+                    value: true,
+                    observer: "__switchSpec"
+                },
+                cursor: {
+                    type: String,
+                    value: 'wait',
+                },
+                index: String,
             },
 
             ready: function () {
                 ctl_p = this;
+                mon_p.static_host = this.static_url;
+                mon_p.static_url = this.static_url + "storage2" + this.storage + "/objects";
+                mon_p.url_stats = this.static_url + "storage2" + this.storage + "/stats";
+                mon_p.storage = this.storage;
                 this._secondChange();
             },
             _setURL() {
-                mon_p.static_url = this.url;
+                mon_p.static_url = this.static_url + this.storage + "/objects";
+                mon_p.storage = this.storage;
             },
             _secondChange() {
-                if (typeof mon_p != "undefined" && typeof mon_p.imgListMeta != "undefined") {
-                    this.max = mon_p.max;
-                    this.t1 = new Date(mon_p.imgListMeta[0].meta._ts * 1000).toString();
-                    t = new Date(mon_p.imgListMeta[0].meta._ts * 1000);
-                    this.t1 = t.toLocaleTimeString([], {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            hour12: false
-                        }) + ' , ' + this.t1.substr(0, 4) + this.t1.substr(8, 3) + this.t1.substr(4, 4) + this.t1
-                        .substr(11, 4);
-                    this.t2 = new Date(mon_p.imgListMeta[this.max - 1].meta._ts * 1000).toString();
-                    t = new Date(mon_p.imgListMeta[this.max - 1].meta._ts * 1000);
-                    this.t2 = t.toLocaleTimeString([], {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            hour12: false
-                        }) + ' , ' + this.t2.substr(0, 4) + this.t2.substr(8, 3) + this.t2.substr(4, 4) + this.t2
-                        .substr(11, 4);
-                }
-
-                // console.log("ready")
-                this.date = (new Date()).toString();
-                t = new Date();
-                this.date = this.date.substr(0, 4) + this.date.substr(8, 3) + this.date.substr(4, 4) +
-                    this.date.substr(11, 4) + ' , ' + t.toLocaleTimeString([], {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        second: '2-digit',
-                        hour12: false
-                    });
-                this.async(function () {
-                    this._secondChange();
+                setInterval(function () {
+                    if (typeof mon_p != "undefined" && typeof mon_p.imgListMeta != "undefined") {
+                        this.max = mon_p.max;
+                    }
+                    this.date = new Date();
                 }.bind(this), 1000);
-
             },
-            _timechanged: function () {
+            _timeChanged: function () {
                 // console.log(mon_p)     
                 if (typeof mon_p == 'undefined') return;
                 // this.ajax_load  = mon_p.$.ajaxReq.    
-
                 if (this.option == 'The past hour') mon_p.last = 13;
                 else if (this.option == 'The past 2 hours') mon_p.last = 25;
                 else if (this.option == 'The past 12 hours') mon_p.last = 145;
-
-                mon_p.ratio = 0;
+                // mon_p.ratio = 0;
             },
-            _test() {
-                console.log(this.$.spin)
-                console.log(this.$.spin.active)
-                this.$.spin.active = !this.$.spin.active;
-                // console.log(this.$.spin.active)
-            },
-            ajax_load() {
-
+            __storage() {
+                mon_p.storage = this.storage;
+                this.$.alignedDialog.close();
             },
             _downloadAll() {
                 mon_p.download_option = "zip";
@@ -387,27 +496,236 @@
             _download() {
                 mon_p.download_option = "img";
                 mon_p.__download();
+                // test();
             },
             _openDialog() {
+                this.by_hour = 0;
+                this.to_time = true;
                 this.$.dropdownDialog.open();
+                this.$.start.value = undefined;
+                this.$.end.value = undefined;
 
             },
             _submitDialog() {
-                if (this.$.dropdownDialog.closingReason.confirmed) {
-                    mon_p.last = 48;
-                }
+                var temp = mon_p.option;
+                setTimeout(function () {
+                    if (this.$.dropdownDialog.closingReason.confirmed) {
+                        if (this.by_hour == 0) {
+                            // mon_p.last = 0;
+                            mon_p.last = this.$.hour.value * 12 + 1;
+                            // mon_p.ratio = 0;
+                        } else if (this.by_hour == 1) {
+                            mon_p.last = this.$.frame.value;
+                            // mon_p.ratio = 0;
+                        }
+                    } else {
+                        this.option = temp;
+                    }
+                }.bind(this), 100);
                 this.$.dropdownDialog.close();
+                this.__calTime();
 
+            },
+            __calTime() {
+                if (this.$.start.value != undefined) {
+                    var startDate = this.$.start.value;
+                    var start = startDate.substr(5, 2) + "," + startDate.substr(8, 2) + "," + startDate.substr(
+                        0, 4);
+                    startDate = new Date(start);
+                    startDate = startDate / 1000;
+                }
+                if (this.$.end.value != undefined) {
+                    var endDate = this.$.end.value;
+                    var end = endDate.substr(5, 2) + "," + endDate.substr(8, 2) + "," + endDate.substr(0, 4);
+                    endDate = new Date(end);
+                    endDate = endDate / 1000;
+                }
+                if (startDate > endDate)
+                    alert("Incorrect time range");
+                console.log(startDate > endDate); //////////////////////////////////////////////
+
+                binarySearch(mon_p.stats.count, 1500219900);
             },
             _optionSelect() {
                 this.$.menu_option.close();
             },
-            __inputURL() {
-                setTimeout(function () {
-                    this.$.url.style.width = (this.url.length * 8) - 60 + 'px';
-                }.bind(this), 100);
+            __inputStorage() {
+                this.url = this.static_url + this.storage + "/objects";
+            },
+            __byChange() {
+                this.by_hour = (this.by_hour + 1) % 3;
+            },
+            __switchBy() {
+                if (this.by_hour == 0) {
+                    this.to_time = true;
+                    this.$.by.className = "by1";
+                    this.$.by.innerHTML = "By hour";
+                    this.$.hour.style.display = "block";
+                    this.$.frame.style.display = "none";
+                    this.$.spec.style.visibility = "visible";
+                } else if (this.by_hour == 1) {
+                    this.to_time = true;
+                    this.$.by.className = "by2";
+                    this.$.by.innerHTML = "By frame";
+                    this.$.frame.style.display = "block";
+                    this.$.hour.style.display = "none";
+                    this.$.spec.style.visibility = "visible";
+                } else {
+                    this.to_time = false;
+                    this.$.by.className = "by3";
+                    this.$.by.innerHTML = "By range";
+                    this.$.frame.style.display = "none";
+                    this.$.spec.style.visibility = "hidden";
+                }
+            },
+            __toTime() {
+                this.to_time = !this.to_time;
+            },
 
+            __showDate(ts) {
+                var date = new Date(ts * 1000).toString();
+                date = date.substr(0, 4) + ' , ' + date.substr(8, 3) + date.substr(4, 4) + ' , ' + date.substr(
+                    11, 4)
+                return date
+            },
+            __showTime(ts) {
+                var time = new Date(ts * 1000);
+                time = time.toLocaleTimeString(
+                    [], {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                        hour12: false
+                    });
+                return time
+            },
+            __sub(ts) {
+                date = new Date(ts).toString();
+                date2 = new Date(ts);
+                time = date.substr(0, 3) + ' , ' + date.substr(8, 3) + date.substr(4, 3) + ' , ' + date.substr(
+                        11,
+                        4) + ' ' +
+                    date2.toLocaleTimeString(
+                        [], {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            second: '2-digit',
+                            hour12: false
+                        });;
+
+                return time;
+            },
+            __switchSpec() {
+                if (this.by_hour == 2) {
+                    this.$.start.style.display = "block";
+                    this.$.end.style.display = "block";
+                } else {
+                    if (this.to_time) {
+                        this.$.start.style.display = "none";
+                        this.$.end.style.display = "block";
+                        this.$.spec.className = "spec1";
+                        this.$.spec.innerHTML = "to time";
+                    } else {
+                        this.$.start.style.display = "block";
+                        this.$.end.style.display = "none";
+                        this.$.spec.className = "spec2";
+                        this.$.spec.innerHTML = "from time";
+                    }
+                }
             }
         });
+
+        function __timeRange() {
+            mon_p.url_option = "";
+        }
+
+        function __idClick(element) {
+            // binarySearch(mon_p.imgListMeta, 1500370800);
+            // console.log(element.value)
+            if (typeof mon_p.imgList == 'undefined') return;
+            mon_p.$.imgSrc.click();
+        }
+
+        function openBy(element) {
+            ctl_p.$.alignedDialog.positionTarget = element;
+            ctl_p.$.alignedDialog.open();
+        }
+
+        function binarySearch(max, i, min = 0) {
+            // console.log("LEN", max);
+            mid = Math.floor((min + max) / 2);
+            ctl_p.index = mid;
+            mon_p.find_url = mon_p.static_url + "?from=" + ctl_p.index + "&limit=1&field=meta";
+            mon_p.$.req1Meta.generateRequest();
+
+            setTimeout(function () {
+                var item;
+
+                item = mon_p.meta[0];
+                // console.log(ctl_p.index, max, min, i, item.meta._ts)
+                // console.log("ITEM", item)
+                if (item.meta._ts == i) {
+                    // console.log('match', item.meta._ts, i, ctl_p.index);
+                    return ctl_p.index;
+                } else if (item.meta._ts < i && max != min) {
+                    // console.log('mid lower', item.meta._ts, i);
+                    return binarySearch(max, i, mid + 1);
+                } else if (item.meta._ts > i && max != min) {
+                    // console.log('mid higher', item.meta._ts, i);
+                    return binarySearch(mid - 1, i, min)
+                } else {
+                    // console.log('not here', i);
+                    return -1;
+                }
+
+            }, 100);
+
+
+
+        }
+
+        // function binarySearch(arr, i) {
+
+
+        //     var mid = Math.floor(arr.length / 2);
+        //     console.log(arr[mid].meta._ts, i);
+
+        //     if (arr[mid].meta._ts === i) {
+        //         console.log('match', arr[mid], i);
+        //         return arr[mid].meta._ts;
+        //     } else if (arr[mid].meta._ts < i && arr.length > 1) {
+        //         console.log('mid lower', arr[mid].meta._ts, i);
+        //         return binarySearch(arr.splice(mid, Number.MAX_VALUE), i);
+        //     } else if (arr[mid].meta._ts > i && arr.length > 1) {
+        //         console.log('mid higher', arr[mid].meta._ts, i);
+        //         return binarySearch(arr.splice(0, mid), i);
+        //     } else {
+        //         console.log('not here', i);
+        //         return -1;
+        //     }
+        // }
+
+        function test() {
+            var src = new Array();
+            for (i = 0; i < mon_p.imgListMeta.length; i++) {
+                console.log(mon_p.imgListMeta[i].meta._ts)
+                src.push("http://bigmaster.igridproject.info:19080/v0.1/object/igrid.rainradar.nck." + mon_p.imgListMeta[
+                    i]._id + "/data?filetype=jpeg");
+            }
+            console.log(src)
+
+            gifshot.createGIF({
+                'images': src,
+                'gifWidth': 500,
+                'gifHeight': 500,
+                'sampleInterval': 10
+            }, function (obj) {
+                if (!obj.error) {
+                    var image = obj.image;
+                    // image = image.replace(/^data:image\/[^;]/, 'data:application/octet-stream');
+                    window.open(image, "gif");
+                }
+            });
+        }
     </script>
 </dom-module>

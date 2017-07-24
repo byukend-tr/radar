@@ -1,0 +1,38 @@
+{
+  "name": "gifshot",
+  "homepage": "https://github.com/yahoo/gifshot",
+  "description": "JavaScript library that can create animated GIFs from media streams, videos, or images",
+  "main": "./dist/gifshot.js",
+  "moduleType": [
+    "amd",
+    "globals",
+    "node"
+  ],
+  "keywords": [
+    "GIF",
+    "animatedGIF"
+  ],
+  "authors": [
+    "Greg Franko",
+    "Chase West"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "src/bower_components",
+    "test",
+    "tests"
+  ],
+  "version": "0.4.4",
+  "_release": "0.4.4",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.4.4",
+    "commit": "b1d5e6cc1a70e9bf50486bbaf213bd72dc054c49"
+  },
+  "_source": "https://github.com/yahoo/gifshot.git",
+  "_target": "^0.4.4",
+  "_originalSource": "gifshot"
+}

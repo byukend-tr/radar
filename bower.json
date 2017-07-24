@@ -22,13 +22,23 @@
     "paper-tabs": "^2.0.0",
     "paper-bottom-sheet": "^2.0.3",
     "web-animations-js": "^2.2.5",
-    "paper-dialog": "^2.0.0"
+    "paper-dialog": "^2.0.0",
+    "gifshot": "^0.4.4",
+    "vaadin-grid": "^3.0.0",
+    "paper-checkbox": "^2.0.1"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#^6.0.0"
   },
   "resolutions": {
     "webcomponentsjs": "^1.0.1",
-    "polymer": "^2.0.0"
+    "polymer": "^2.0.0",
+    "paper-styles": "^2.0.0",
+    "iron-icon": "^2.0.0",
+    "paper-ripple": "^2.0.0",
+    "iron-selector": "^2.0.0",
+    "paper-button": "^2.0.0",
+    "neon-animation": "1 - 2",
+    "iron-resizable-behavior": "^v2.0.0"
   }
 }
