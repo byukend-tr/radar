@@ -512,7 +512,9 @@
             },
             _submitDialog() {
                 this.$.dropdownDialog.close();
+                mon_p.real_time = false;
                 this.__calTime();
+
             },
             __calTime() {
                 var temp = mon_p.option;
@@ -569,13 +571,35 @@
                                 limit = this.$.hour.value * 12 + 1;
                                 mon_p.last = limit;
                                 // mon_p.ratio = 0;
+
+                                // if (this.to_time) {
+                                //     mon_p.url = mon_p.static_url + '?' + "from=" + (this.to - limit + 1) +
+                                //         "&limit=" +
+                                //         limit + "&field=meta";
+                                // } else {
+                                //     mon_p.url = mon_p.static_url + '?' + "from=" + this.to +
+                                //         "&limit=" +
+                                //         limit + "&field=meta";
+                                // }
+                                // mon_p.pull();
                             } else if (this.by_hour == 1) {
                                 limit = this.$.frame.value;
                                 mon_p.last = limit;
-
                                 // mon_p.ratio = 0;
+                                // if (this.to_time) {
+                                //     mon_p.url = mon_p.static_url + '?' + "from=" + (this.to - limit + 1) +
+                                //         "&limit=" +
+                                //         limit + "&field=meta";
+                                // } else {
+                                //     mon_p.url = mon_p.static_url + '?' + "from=" + this.to +
+                                //         "&limit=" +
+                                //         limit + "&field=meta";
+                                // }
+                                // mon_p.pull();
                             } else if (this.by_hour == 2) {
-
+                                // mon_p.url = mon_p.static_url + '?' + "from=" + this.to + "&limit=" +
+                                //     this.from - this.to + "&field=meta";
+                                // mon_p.pull();
                             }
                         } else {
                             this.option = temp;
@@ -688,6 +712,7 @@
             // binarySearch(mon_p.imgListMeta, 1500370800);
             // console.log(element.value)
             if (typeof mon_p.imgList == 'undefined') return;
+            console.log(this._id)
             mon_p.$.imgSrc.click();
         }
 
