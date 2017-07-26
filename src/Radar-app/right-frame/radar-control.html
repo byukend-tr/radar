@@ -316,6 +316,7 @@
                             on-tap="_optionSelect">
                             <paper-item class='showtime' value='The past hour'>The past hour</paper-item>
                             <paper-item class='showtime' value='The past 2 hours'>The past 2 hours</paper-item>
+                            <paper-item class='showtime' value='The past 6 hours'>The past 6 hours</paper-item>
                             <paper-item class='showtime' value='The past 12 hours'>The past 12 hours</paper-item>
                             <paper-item class='showtime' value='Custom' on-click="_openDialog">Custom</paper-item>
                         </paper-listbox>
@@ -434,7 +435,7 @@
                     type: String,
                 },
                 option: {
-                    value: 'The past 12 hours',
+                    value: 'The past 6 hours',
                     observer: '_timeChanged'
                 },
                 t1: String,
@@ -454,6 +455,8 @@
                     value: 'wait',
                 },
                 index: String,
+                from: Number,
+                to: Number,
             },
 
             ready: function () {
@@ -482,6 +485,7 @@
                 // this.ajax_load  = mon_p.$.ajaxReq.    
                 if (this.option == 'The past hour') mon_p.last = 13;
                 else if (this.option == 'The past 2 hours') mon_p.last = 25;
+                else if (this.option == 'The past 6 hours') mon_p.last = 61;
                 else if (this.option == 'The past 12 hours') mon_p.last = 145;
                 // mon_p.ratio = 0;
             },
@@ -507,44 +511,85 @@
 
             },
             _submitDialog() {
-                var temp = mon_p.option;
-                setTimeout(function () {
-                    if (this.$.dropdownDialog.closingReason.confirmed) {
-                        if (this.by_hour == 0) {
-                            // mon_p.last = 0;
-                            mon_p.last = this.$.hour.value * 12 + 1;
-                            // mon_p.ratio = 0;
-                        } else if (this.by_hour == 1) {
-                            mon_p.last = this.$.frame.value;
-                            // mon_p.ratio = 0;
-                        }
-                    } else {
-                        this.option = temp;
-                    }
-                }.bind(this), 100);
                 this.$.dropdownDialog.close();
                 this.__calTime();
-
             },
             __calTime() {
+                var temp = mon_p.option;
+
                 if (this.$.start.value != undefined) {
                     var startDate = this.$.start.value;
                     var start = startDate.substr(5, 2) + "," + startDate.substr(8, 2) + "," + startDate.substr(
                         0, 4);
                     startDate = new Date(start);
-                    startDate = startDate / 1000;
+
+                    startDate = startDate / 1000 + 25200;
+                    console.log(startDate)
+
                 }
                 if (this.$.end.value != undefined) {
                     var endDate = this.$.end.value;
                     var end = endDate.substr(5, 2) + "," + endDate.substr(8, 2) + "," + endDate.substr(0, 4);
                     endDate = new Date(end);
-                    endDate = endDate / 1000;
+                    endDate = endDate / 1000 + 25200;
+                    console.log(endDate)
+
                 }
                 if (startDate > endDate)
                     alert("Incorrect time range");
-                console.log(startDate > endDate); //////////////////////////////////////////////
+                else {
+                    var from, to, limit;
+                    setTimeout(function () {
+                        if (this.$.dropdownDialog.closingReason.confirmed) {
+                            mon_p.loading = true;
+                            if (this.$.start.value != undefined) {
+                                this.async(function () {
+                                    console.log("FROM")
 
-                binarySearch(mon_p.stats.count, 1500219900);
+                                    binarySearch1(mon_p.stats.count, startDate);
+                                }, 100)
+
+                            }
+                            if (this.$.end.value != undefined) {
+                                this.async(function () {
+                                    console.log("TO")
+
+                                    binarySearch2(mon_p.stats.count, endDate);
+                                }, 1500)
+
+                            }
+
+
+                            setTimeout(function () {
+                                console.log("FROM", this.from, "TO", this.to)
+                            }.bind(this), 3000);
+
+                            if (this.by_hour == 0) {
+                                // mon_p.last = 0;
+                                limit = this.$.hour.value * 12 + 1;
+                                mon_p.last = limit;
+                                // mon_p.ratio = 0;
+                            } else if (this.by_hour == 1) {
+                                limit = this.$.frame.value;
+                                mon_p.last = limit;
+
+                                // mon_p.ratio = 0;
+                            } else if (this.by_hour == 2) {
+
+                            }
+                        } else {
+                            this.option = temp;
+                        }
+                        mon_p.loading = false;
+
+                    }.bind(this), 100);
+                }
+
+
+
+
+
+                // binarySearch(mon_p.stats.count, 1500219900);
             },
             _optionSelect() {
                 this.$.menu_option.close();
@@ -651,10 +696,11 @@
             ctl_p.$.alignedDialog.open();
         }
 
-        function binarySearch(max, i, min = 0) {
+        function binarySearch1(max, i, min = 0) {
             // console.log("LEN", max);
             mid = Math.floor((min + max) / 2);
             ctl_p.index = mid;
+            console.log(ctl_p.index)
             mon_p.find_url = mon_p.static_url + "?from=" + ctl_p.index + "&limit=1&field=meta";
             mon_p.$.req1Meta.generateRequest();
 
@@ -662,28 +708,57 @@
                 var item;
 
                 item = mon_p.meta[0];
-                // console.log(ctl_p.index, max, min, i, item.meta._ts)
+                console.log(ctl_p.index, max, min, i, item.meta._ts)
                 // console.log("ITEM", item)
-                if (item.meta._ts == i) {
+                if (Math.abs(item.meta._ts - i) <= 3600) {
                     // console.log('match', item.meta._ts, i, ctl_p.index);
-                    return ctl_p.index;
-                } else if (item.meta._ts < i && max != min) {
-                    // console.log('mid lower', item.meta._ts, i);
-                    return binarySearch(max, i, mid + 1);
-                } else if (item.meta._ts > i && max != min) {
-                    // console.log('mid higher', item.meta._ts, i);
-                    return binarySearch(mid - 1, i, min)
+                    ctl_p.from = ctl_p.index;
+                    return
+                } else if (item.meta._ts < i && max >= min) {
+                    console.log('mid lower', item.meta._ts, i);
+                    return binarySearch1(max, i, mid + 1);
+                } else if (item.meta._ts > i && max >= min) {
+                    console.log('mid higher', item.meta._ts, i);
+                    return binarySearch1(mid - 1, i, min)
                 } else {
                     // console.log('not here', i);
-                    return -1;
+                    ctl_p.from = ctl_p.index;
+                    console.log(i, item.meta._ts)
+                    return
                 }
-
-            }, 100);
-
-
-
+            }, 200);
         }
 
+        function binarySearch2(max, i, min = 0) {
+            // console.log("LEN", max);
+            mid = Math.floor((min + max) / 2);
+            ctl_p.index = mid;
+            console.log(ctl_p.index)
+            mon_p.find_url = mon_p.static_url + "?from=" + ctl_p.index + "&limit=1&field=meta";
+            mon_p.$.req1Meta.generateRequest();
+
+            setTimeout(function () {
+                var item;
+
+                item = mon_p.meta[0];
+                console.log(ctl_p.index, max, min, i, item.meta._ts)
+                // console.log("ITEM", item)
+                if (item.meta._ts == i) {
+                    ctl_p.to = ctl_p.index;
+                    return
+                } else if (item.meta._ts < i && max != min) {
+                    console.log('mid lower', item.meta._ts, i);
+                    return binarySearch2(max, i, mid + 1);
+                } else if (item.meta._ts > i && max != min) {
+                    console.log('mid higher', item.meta._ts, i);
+                    return binarySearch2(mid - 1, i, min)
+                } else {
+                    ctl_p.to = ctl_p.index;
+                    console.log(i, item.meta._ts)
+                    return
+                }
+            }, 80);
+        }
         // function binarySearch(arr, i) {
 
 

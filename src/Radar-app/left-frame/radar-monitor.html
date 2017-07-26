@@ -17,12 +17,7 @@
                 height: 100%;
             }
 
-            @media screen and (max-width:640px) {
-
-                .panel1 {
-                    display: none;
-                }
-            }
+            @media screen and (max-width:640px) {}
 
             .main {
                 padding-top: 4%;
@@ -434,7 +429,9 @@
                 // uriContent = "data:application/octet-stream;base64," + encodeURIComponent(this.imgList[this.ratio -
                 //     1].data.data);
                 // window.open(uriContent, "radar-stream.jpg");
-                this.loading = false;
+                setTimeout(function () {
+                    this.loading = false;
+                }, 1000);
 
             },
         });
