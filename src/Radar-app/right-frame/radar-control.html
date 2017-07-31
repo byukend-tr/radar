@@ -37,7 +37,7 @@
             }
 
             vaadin-grid {
-                height: 500px;
+                height: 550px;
                 --vaadin-grid-cell: {
                     padding: 4px;
                 }
@@ -291,52 +291,53 @@
             }
         </style>
         <!-- TITLE -->
-        <app-toolbar>
-            <div main-title>
-                <h1>Information</h1>
-            </div>
-            <div id="time">[[__sub(date)]]</div>
-            <div class="right-panel">
-                <paper-icon-button id="setting" icon="icons:settings" onclick="openBy(this)">
-                </paper-icon-button>
-                <paper-dialog id="alignedDialog" no-overlap horizontal-align="left" vertical-align="top" with-backdrop>
-                    <h3>Storage name</h3>
-                    <div class="url_dialog">
-                        <paper-input class="url" id="storage" value={{storage}} no-label-float>{{storage}}</paper-input>
-                        <paper-icon-button icon="icons:check" on-click="__storage">
-                    </div>
-                </paper-dialog>
-                <div class="time-option">
-                    <paper-menu-button id="menu_option">
-                        <paper-button slot="dropdown-trigger" raised>
-                            <iron-icon icon="icons:timeline"></iron-icon>
-                            <span>[[option]]</span>
-                        </paper-button>
-                        <paper-listbox slot="dropdown-content" class="dropdown-content" attr-for-selected="value" selected={{option}} id='listbox'
-                            on-tap="_optionSelect">
-                            <paper-item class='showtime' value='The past hour'>The past hour</paper-item>
-                            <paper-item class='showtime' value='The past 2 hours'>The past 2 hours</paper-item>
-                            <paper-item class='showtime' value='The past 6 hours'>The past 6 hours</paper-item>
-                            <paper-item class='showtime' value='The past 12 hours'>The past 12 hours</paper-item>
-                            <paper-item class='showtime' value='Custom' on-click="_openDialog">Custom</paper-item>
-                        </paper-listbox>
-                    </paper-menu-button>
+        <div style="width:100%;">
+            <app-toolbar>
+                <div main-title>
+                    <h1>Information</h1>
                 </div>
-            </div>
-        </app-toolbar>
+                <div id="time">[[__sub(date)]]</div>
+                <div class="right-panel">
+                    <paper-icon-button id="setting" icon="icons:settings" onclick="openBy(this)">
+                    </paper-icon-button>
+                    <paper-dialog id="alignedDialog" no-overlap horizontal-align="left" vertical-align="top" with-backdrop>
+                        <h3>Storage name</h3>
+                        <div class="url_dialog">
+                            <paper-input class="url" id="storage" value={{storage}} no-label-float>{{storage}}</paper-input>
+                            <paper-icon-button icon="icons:check" on-click="__storage">
+                        </div>
+                    </paper-dialog>
+                    <div class="time-option">
+                        <paper-menu-button id="menu_option">
+                            <paper-button slot="dropdown-trigger" raised>
+                                <iron-icon icon="icons:timeline"></iron-icon>
+                                <span>[[option]]</span>
+                            </paper-button>
+                            <paper-listbox slot="dropdown-content" class="dropdown-content" attr-for-selected="value" selected={{option}} id='listbox'
+                                on-tap="_optionSelect">
+                                <paper-item class='showtime' value='The past hour'>The past hour</paper-item>
+                                <paper-item class='showtime' value='The past 2 hours'>The past 2 hours</paper-item>
+                                <paper-item class='showtime' value='The past 6 hours'>The past 6 hours</paper-item>
+                                <paper-item class='showtime' value='The past 12 hours'>The past 12 hours</paper-item>
+                                <paper-item class='showtime' value='Custom' on-click="_openDialog">Custom</paper-item>
+                            </paper-listbox>
+                        </paper-menu-button>
+                    </div>
+                </div>
+            </app-toolbar>
 
-        <!--INFORMATION-->
-        <div class="info">
-            <vaadin-grid items='{{imgListMeta}}'>
-                <vaadin-grid-column width="70px" flex-grow="0">
-                    <template class="header">
-                        <div class="cell">Index</div>
-                    </template>
-                    <template>
-                        <div class="cell" name="[[index]]">[[index]]</div>
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column>
+            <!--INFORMATION-->
+            <div class="info">
+                <vaadin-grid items='{{imgListMeta}}'>
+                    <vaadin-grid-column width="70px" flex-grow="0">
+                        <template class="header">
+                            <div class="cell">Index</div>
+                        </template>
+                        <template>
+                            <div class="cell" name="[[index]]">[[index]]</div>
+                        </template>
+                    </vaadin-grid-column>
+                    <!-- <vaadin-grid-column>
                     <template class="header">
                         <div class="cell">ID</div>
                     </template>
@@ -347,63 +348,64 @@
                             </div>
                         </div>
                     </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column>
-                    <template class="header">
-                        <div class="cell">Date</div>
-                    </template>
-                    <template>
-                        <div class="cell">[[__showDate(item.meta._ts)]]</div>
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column>
-                    <template class="header">
-                        <div class="cell">Time</div>
-                    </template>
-                    <template>
-                        <div class="cell">[[__showTime(item.meta._ts)]]</div>
-                    </template>
-                </vaadin-grid-column>
-            </vaadin-grid>
-        </div>
+                </vaadin-grid-column> -->
+                    <vaadin-grid-column>
+                        <template class="header">
+                            <div class="cell">Date</div>
+                        </template>
+                        <template>
+                            <div class="cell">[[__showDate(item.meta._ts)]]</div>
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column>
+                        <template class="header">
+                            <div class="cell">Time</div>
+                        </template>
+                        <template>
+                            <div class="cell">[[__showTime(item.meta._ts)]]</div>
+                        </template>
+                    </vaadin-grid-column>
+                </vaadin-grid>
+            </div>
 
-        <div class='main text'>
-            <!--DOWNLOAD-->
-            <div class="download">
-                <paper-button on-tap="_downloadAll" raised>
-                    <iron-icon icon='icons:archive'></iron-icon>download (.zip)
-                </paper-button>
-                <!-- <paper-button on-tap="_download" raised>
+            <div class='main text'>
+                <!--DOWNLOAD-->
+                <div class="download">
+                    <paper-button on-tap="_downloadAll" raised>
+                        <iron-icon icon='icons:archive'></iron-icon>download (.zip)
+                    </paper-button>
+                    <!-- <paper-button on-tap="_download" raised>
                     <iron-icon icon='icons:archive'></iron-icon>download current
                 </paper-button> -->
+                </div>
             </div>
-        </div>
 
-        <!-- OPEN DIALOG -->
-        <paper-dialog id="dropdownDialog" with-backdrop>
-            <h2>Custom</h2>
-            <div style="padding:3% 8%; margin:0 0 -30px 0;">
-                <paper-button id="by" class="by1" on-click="__byChange" raised>By hour </paper-button>
-                <paper-button id="spec" class="spec1" on-click="__toTime" raised>To time </paper-button>
-            </div>
-            <paper-input id="hour" label="hour(s)" type="number"></paper-input>
-            <paper-input id="frame" label="number of frame(s)" type="number"></paper-input>
+            <!-- OPEN DIALOG -->
+            <paper-dialog id="dropdownDialog" with-backdrop>
+                <h2>Custom</h2>
+                <div style="padding:3% 8%; margin:0 0 -30px 0;">
+                    <paper-button id="by" class="by1" on-click="__byChange" raised>By hour </paper-button>
+                    <paper-button id="spec" class="spec1" on-click="__toTime" raised>To time </paper-button>
+                </div>
+                <paper-input id="hour" label="hour(s)" type="number"></paper-input>
+                <paper-input id="frame" label="number of frame(s)" type="number"></paper-input>
 
-            <paper-input id="start" label="From" type="date"></paper-input>
-            <paper-input id="start1" label="Time" type="time" style="display:none"></paper-input>
+                <paper-input id="start" label="From" type="date"></paper-input>
+                <paper-input id="start1" label="Time" type="time" style="display:none"></paper-input>
 
-            <paper-input id="end" label="To" type="date"></paper-input>
-            <paper-input id="end1" label="From" type="time" style="display:none"></paper-input>
+                <paper-input id="end" label="To" type="date"></paper-input>
+                <paper-input id="end1" label="From" type="time" style="display:none"></paper-input>
 
-            <div class="_submit" style="text-align:center">
-                <paper-button class="submit" on-click="_submitDialog" dialog-confirm raised> OK</paper-button>
-                <paper-button class="submit" on-click="_submitDialog" dialog-dismiss raised> Cancel</paper-button>
-            </div>
-        </paper-dialog>
-        <!--http://bigmaster.igridproject.info:19080/v0.1/storage/igrid.rainradar.nck/stats
+                <div class="_submit" style="text-align:center">
+                    <paper-button class="submit" on-click="_submitDialog" dialog-confirm raised> OK</paper-button>
+                    <paper-button class="submit" on-click="_submitDialog" dialog-dismiss raised> Cancel</paper-button>
+                </div>
+            </paper-dialog>
+            <!--http://bigmaster.igridproject.info:19080/v0.1/storage/igrid.rainradar.nck/stats
         <!--http://bigmaster.igridproject.info:19080/v0.1/storage/igrid.rainradar.nck/object ?last?from?limit?
         http://bigmaster.igridproject.info:19080/v0.1/object/igrid.rainradar.nkm.28687203000018705949e136/data?filetype=jpeg
         -->
+        </div>
     </template>
     <script>
         Polymer({
@@ -525,7 +527,7 @@
                         0, 4);
                     startDate = new Date(start);
 
-                    startDate = startDate / 1000 + 25200;
+                    startDate = startDate / 1000;
                     console.log(startDate)
 
                 }
@@ -533,7 +535,7 @@
                     var endDate = this.$.end.value;
                     var end = endDate.substr(5, 2) + "," + endDate.substr(8, 2) + "," + endDate.substr(0, 4);
                     endDate = new Date(end);
-                    endDate = endDate / 1000 + 25200;
+                    endDate = endDate / 1000;
                     console.log(endDate)
 
                 }
@@ -549,7 +551,7 @@
                                     console.log("FROM")
 
                                     binarySearch1(mon_p.stats.count, startDate);
-                                }, 100)
+                                }, 1500)
 
                             }
                             if (this.$.end.value != undefined) {
@@ -601,10 +603,11 @@
                                 //     this.from - this.to + "&field=meta";
                                 // mon_p.pull();
                             }
+                            mon_p.loading = false;
+
                         } else {
                             this.option = temp;
                         }
-                        mon_p.loading = false;
 
                     }.bind(this), 100);
                 }
@@ -735,7 +738,7 @@
                 item = mon_p.meta[0];
                 console.log(ctl_p.index, max, min, i, item.meta._ts)
                 // console.log("ITEM", item)
-                if (Math.abs(item.meta._ts - i) <= 3600) {
+                if (item.meta._ts == i) {
                     // console.log('match', item.meta._ts, i, ctl_p.index);
                     ctl_p.from = ctl_p.index;
                     return

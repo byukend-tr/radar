@@ -16,10 +16,10 @@
              :host {
                 display: block;
                 height: 80%;
-                --app-grid-columns: 3;
-                --app-grid-expandible-item-columns: 2;
+                --app-grid-columns: 4;
+                --app-grid-expandible-item-columns:3;
                 --app-grid-gutter: 20px;
-                --app-grid-item-height: 60%;
+                --app-grid-item-height: 80%;
             }
             /*paper-progress {
         display: block;
@@ -54,8 +54,8 @@
             }
 
             .left-frame {
+                @apply --app-grid-expandible-item;
                 background-color: transparent;
-                margin: 0 auto;
                 margin-bottom: 10px;
                 min-width: 380px;
                 min-height: 720px;
@@ -65,16 +65,13 @@
                 box-shadow: -1px 1px 4px 1px #0F1406; */
                 /* border: 1px solid rgba(158, 158, 158, 0.7);  */
             }
-
-            .left-frame:first-child {
+            /* .left-frame:first-child {
                 --app-grid-item-height: 121%;
-            }
-
+            } */
 
             .right-frame {
-                @apply --app-grid-expandible-item;
+                 /* @apply --app-grid-expandible-item; */
                 background-color: rgba(255, 255, 255, 0.9);
-                margin: 0 auto;
                 min-width: 380px;
                 min-height: 750px;
                 overflow: hidden;
